@@ -2,6 +2,7 @@ const express = require('express');
 const {pool} = require('../db/pool');
 const {requireAuth}  = require('../middleware/authn');
 
+
 const router = express.Router();
 
 router.post('/api/constitution/analyze', requireAuth,  async(req, res)=>{
@@ -224,4 +225,5 @@ router.post('/api/constitution/analyze', requireAuth,  async(req, res)=>{
 });
 
 module.exports = router;
+
 
