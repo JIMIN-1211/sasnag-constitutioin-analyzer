@@ -1,0 +1,9 @@
+# Node.js 패키지
+node_modules/
+
+# 환경 변수 파일
+.env
+
+# 운영체제 파일
+.DS_Store
+
