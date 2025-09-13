@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@android:color/white">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="환영합니다!"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="#111111"
+        android:gravity="center"
+        android:layout_marginBottom="12dp"/>
+
+    <TextView
+        android:id="@+id/tvDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="지금부터 당신의 몸이라는 고서를\n
+        AI 사서가 해석해 드릴게요."
+        android:textSize="14sp"
+        android:textColor="#666666"
+        android:gravity="center"
+        android:layout_marginBottom="18dp"/>
+
+    <!-- 초록색 둥근 사각형 버튼 -->
+    <Button
+        android:id="@+id/btnStartQuestion"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="내 체질 진단 시작하기"
+        android:textColor="@android:color/white"
+        android:background="@drawable/bg_btn_green_round"
+        android:layout_marginBottom="10dp"/>
+
+    <!-- 회색 둥근 사각형 버튼 -->
+    <Button
+        android:id="@+id/btnGoHome"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="홈으로 이동하기"
+        android:textColor="#111111"
+        android:background="@drawable/bg_btn_gray_round"/>
+</LinearLayout>
