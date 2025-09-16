@@ -1,192 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#FFFFFF">
 
     <!-- 상단 툴바 -->
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="12dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <!-- 뒤로가기 버튼 -->
-        <ImageButton
+        <TextView
             android:id="@+id/btnBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/ic_media_previous"
-            android:contentDescription="뒤로가기" />
+            android:text="←"
+            android:textSize="22sp"
+            android:padding="8dp" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="소화 진단"
+            android:text="체질 진단"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:gravity="center"/>
+            android:gravity="center" />
 
         <!-- X 닫기 버튼 -->
-        <ImageButton
+        <TextView
             android:id="@+id/btnClose"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/ic_menu_close_clear_cancel"
-            android:contentDescription="닫기" />
+            android:text="X"
+            android:textSize="22sp"
+            android:padding="8dp" />
     </LinearLayout>
 
     <!-- 진행 현황 -->
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="20dp"
-        android:background="#FFFFFF">
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="8dp"
+        android:progress="2"
+        android:max="6"
+        android:progressTint="#2E7D32"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-        <!-- 상단 진행률 -->
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:progress="2"
-            android:max="5"
-            android:progressTint="#2E7D32"
-            android:layout_marginBottom="8dp"/>
+    <TextView
+        android:id="@+id/tvProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2 / 6단계"
+        android:textSize="14sp"
+        android:textColor="#666666"
+        app:layout_constraintTop_toBottomOf="@id/progressBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"/>
 
-        <TextView
-            android:id="@+id/tvProgress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1 / 5단계"
-            android:textSize="14sp"
-            android:textColor="#666666"
-            android:gravity="end"
-            android:layout_gravity="end"
-            android:layout_marginBottom="16dp"/>
+    <TextView
+        android:id="@+id/tvSectionTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="성격 및 생활습관"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#111111"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintTop_toBottomOf="@id/tvProgress"
+        app:layout_constraintStart_toStartOf="parent"/>
 
-        <TextView
-            android:id="@+id/tvSectionTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="성격 및 생활습관"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="#111111"
-            android:layout_marginBottom="20dp"/>
+    <!-- RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="16dp"
+        android:clipToPadding="false"
+        android:scrollbars="vertical"
+        app:layout_constraintTop_toBottomOf="@id/tvSectionTitle"
+        app:layout_constraintBottom_toTopOf="@id/btnNext"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-
-        <!-- 질문 텍스트 1-->
-        <TextView
-            android:id="@+id/tvQuestion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1. 성격이 대범한 편인가요?"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
-
-        <!-- 선택지 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
-
-            <Button
-                android:id="@+id/btnOption1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="자주 그렇다"
-                android:layout_margin="4dp"
-                android:background="@drawable/bg_btn_gray_round"/>
-
-            <Button
-                android:id="@+id/btnOption2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="가끔 그렇다"
-                android:layout_margin="4dp"
-                android:background="@drawable/bg_btn_gray_round"/>
-
-            <Button
-                android:id="@+id/btnOption3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="거의 그렇지 않다"
-                android:layout_margin="4dp"
-                android:background="@drawable/bg_btn_gray_round"/>
-            <TextView
-                android:id="@+id/tvQuestion"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1. 성격이 대범한 편인가요?"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
-
-            <!-- 선택지 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center">
-
-                <Button
-                    android:id="@+id/btnOption1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="자주 그렇다"
-                    android:layout_margin="4dp"
-                    android:background="@drawable/bg_btn_gray_round"/>
-
-                <Button
-                    android:id="@+id/btnOption2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="가끔 그렇다"
-                    android:layout_margin="4dp"
-                    android:background="@drawable/bg_btn_gray_round"/>
-
-                <Button
-                    android:id="@+id/btnOption3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="거의 그렇지 않다"
-                    android:layout_margin="4dp"
-                    android:background="@drawable/bg_btn_gray_round"/>
-
-        </LinearLayout>
-
-        <!-- 하단 네비게이션 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
-
-            <Button
-                android:id="@+id/btnPrev"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="이전"
-                android:background="#E0E0E0"
-                android:textColor="#111111"/>
-
-            <Button
-                android:id="@+id/btnNext"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="다음"
-                android:background="#2E7D32"
-                android:textColor="@android:color/white"
-                android:enabled="false"/> <!-- 선택 전까지 비활성화 -->
-        </LinearLayout>
-    </LinearLayout>
-</LinearLayout>
+    <!-- 하단 버튼 -->
+    <Button
+        android:id="@+id/btnNext"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="다음"
+        android:background="#2E7D32"
+        android:textColor="@android:color/white"
+        android:enabled="false"
+        android:padding="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
