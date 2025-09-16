@@ -1,4 +1,4 @@
-package com.example.app; // 패키지명 맞춰주세요
+package com.example.app;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -53,7 +53,7 @@ public class InfoActivity extends AppCompatActivity {
         btnBack.setOnClickListener(v -> onBackPressed());
     }
 
-    /** 성별 토글 (간단히 색만 교체) */
+    // 성별 토글 (간단히 색만 교체)
     private void setupGenderButtons() {
         View.OnClickListener sel = v -> {
             if (v.getId() == R.id.btnMale) gender = "male";
@@ -86,10 +86,10 @@ public class InfoActivity extends AppCompatActivity {
         }
     }
 
-    /** 인증번호 요청 + 3분 타이머 */
+    // 인증번호 요청(추후 추가예정) + 3분 타이머 
     private void setupCodeRequest() {
         btnRequestCode.setOnClickListener(v -> {
-            // TODO: 서버에 인증번호 요청 API 연동
+            // 서버에 인증번호 요청 API 연동
             startTimer(3 * 60); // 3분
         });
     }
@@ -107,7 +107,7 @@ public class InfoActivity extends AppCompatActivity {
         }.start();
     }
 
-    /** 폼 검증(간단) */
+    // 폼 검증
     private void setupFormValidation() {
         TextWatcher watcher = new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int st, int c, int a) {}
