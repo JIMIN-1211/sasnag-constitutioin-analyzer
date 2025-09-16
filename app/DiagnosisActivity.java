@@ -1,4 +1,4 @@
-package com.example.app; // 패키지명 수정하세요
+package com.example.app;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,3 +10,4 @@ public class DiagnosisActivity extends AppCompatActivity {
         setContentView(R.layout.activity_diagnosis);
     }
 }
+
