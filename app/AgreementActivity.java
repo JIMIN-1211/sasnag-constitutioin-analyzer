@@ -1,4 +1,4 @@
-package com.example.app; // 실제 패키지명으로 수정하세요
+package com.example.app; // 
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -22,7 +22,7 @@ public class AgreementActivity extends AppCompatActivity {
     private TextView arrowAge, arrowService, arrowPrivacy, arrowSensitive, arrowMarketing;
     private Button btnContinue;
 
-    // 약관 텍스트 저장용 (메모리에 저장. 원하면 SharedPreferences/DB로 저장)
+    // 약관 텍스트 저장용
     private Map<String, String> termsContent = new HashMap<>();
 
     @Override
@@ -46,7 +46,7 @@ public class AgreementActivity extends AppCompatActivity {
 
         btnContinue = findViewById(R.id.btnContinue);
 
-        // 초기 텍스트 기본값(예시)
+        // 초기 텍스트 기본값
         termsContent.put("age", "만 14세 이상임을 확인합니다.");
         termsContent.put("service", "서비스 이용약관 기본내용");
         termsContent.put("privacy", "개인정보 수집 및 이용에 대한 안내");
@@ -68,7 +68,6 @@ public class AgreementActivity extends AppCompatActivity {
         cbService.setOnCheckedChangeListener((b, s) -> updateButtonState());
         cbPrivacy.setOnCheckedChangeListener((b, s) -> updateButtonState());
 
-        // 참고: 선택 항목 변화는 전체동의 연동 등에 영향 줄 수 있음.
         cbSensitive.setOnCheckedChangeListener((b, s) -> {/* 필요시 처리 */});
         cbMarketing.setOnCheckedChangeListener((b, s) -> {/* 필요시 처리 */});
 
@@ -79,7 +78,7 @@ public class AgreementActivity extends AppCompatActivity {
         arrowSensitive.setOnClickListener(v -> showBottomSheet("sensitive"));
         arrowMarketing.setOnClickListener(v -> showBottomSheet("marketing"));
 
-        // (버튼 동작 예시) 필수 동의가 되어야 활성화
+        //  필수 동의가 되어야 활성화
         btnContinue.setOnClickListener(v -> {
             Intent intent = new Intent(AgreementActivity.this, InfoActivity.class);
             startActivity(intent);
@@ -96,7 +95,7 @@ public class AgreementActivity extends AppCompatActivity {
         btnContinue.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(colorId)));
     }
 
-    // 바텀시트 열기: key로 어떤 약관인지 구분
+    // 바텀시트 열기
     private void showBottomSheet(String key) {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         View sheetView = getLayoutInflater().inflate(R.layout.bottomsheet_terms, null);
@@ -110,7 +109,7 @@ public class AgreementActivity extends AppCompatActivity {
 
         btnSave.setOnClickListener(v -> {
             String newText = et.getText().toString();
-            termsContent.put(key, newText); // 메모리에 저장 (원하면 영구저장)
+            termsContent.put(key, newText); // 메모리에 저장
             bottomSheetDialog.dismiss();
         });
 
@@ -130,9 +129,8 @@ public class AgreementActivity extends AppCompatActivity {
         }
     }
 
-    // 체크박스 체크색상을 기본으로 적용(선택사항)
+    // 체크박스 체크색상을 기본으로 적용
     private void applyCheckboxColors() {
-        // 기본 체크박스 색상 유지: 별도 셀렉터 사용 안함.
-        // 필요하면 buttonTint 로 컬러 셋팅 가능.
+        // 기본 체크박스 색상 유지
     }
 }
