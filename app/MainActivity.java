@@ -1,4 +1,4 @@
-package com.example.app; // 패키지명 맞게 수정
+package com.example.app; 
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         Button btnStart = dialog.findViewById(R.id.btnStartQuestion);
         Button btnHome = dialog.findViewById(R.id.btnGoHome);
 
-        // 초록 버튼: 내 체질 진단 시작하기
+        // 초록 버튼: 체질 진단 페이지로 이동
         btnStart.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, BodyInfoActivity.class);
             startActivity(intent);
