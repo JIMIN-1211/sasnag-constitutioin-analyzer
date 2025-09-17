@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+        <!-- 앱 실행 시 제일 먼저 실행되는 화면 = Splash -->
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <!-- 스플래시 이후 이동할 화면 -->
+        <activity android:name=".LoginActivity"/>
+        <activity android:name=".AgreementActivity"/>
+        <activity android:name=".InfoActivity"/>
+        <activity android:name=".MainActivity"/>
+        <activity android:name=".BodyInfoActivity"/>
+        <activity android:name=".QuestionActivity"/>
+        <activity android:name=".QuestionActivity2"/>
+        <activity android:name=".QuestionActivity3"/>
+        <activity android:name=".QuestionActivity4"/>
+        <activity android:name=".QuestionActivity5"/>
+
+
+
+
+    </application>
+
+</manifest>
