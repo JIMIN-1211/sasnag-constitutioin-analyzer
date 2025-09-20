@@ -1,4 +1,4 @@
-package com.example.app;
+package com.example.app.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.app.R;
 
 public class InfoActivity extends AppCompatActivity {
 
@@ -86,7 +88,7 @@ public class InfoActivity extends AppCompatActivity {
         }
     }
 
-    // 인증번호 요청(추후 추가예정) + 3분 타이머 
+    // 인증번호 요청(추후 추가예정) + 3분 타이머
     private void setupCodeRequest() {
         btnRequestCode.setOnClickListener(v -> {
             // 서버에 인증번호 요청 API 연동
@@ -130,12 +132,12 @@ public class InfoActivity extends AppCompatActivity {
         validate();
     }
 
-    private void validate() {  //일단 길이는 최소한으로 맞춰놓으니 나중에 고쳐놓을 것
-        boolean ok = etName.getText().length() > 0
-                && etPhone.getText().length() > 0
-                && etCode.getText().length() > 0
-                && etBirthYear.getText().length() > 0
-                && etPassword.getText().length() > 0;
+    private void validate() {  //일단 길이는 최소한으로 맞춰놓음
+        boolean ok = etName.getText().length() > 0 
+                && etPhone.getText().length() > 0       //최대 11로
+                && etCode.getText().length() > 0        //최대 6으로
+                && etBirthYear.getText().length() > 0   //최대 6으로
+                && etPassword.getText().length() > 0;   //4 이상으로
 
         btnSubmit.setEnabled(ok);
         btnSubmit.setAlpha(ok ? 1f : 0.5f);
