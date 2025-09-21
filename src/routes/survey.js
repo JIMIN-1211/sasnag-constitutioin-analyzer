@@ -5,7 +5,7 @@ const {requireAuth}  = require('../middleware/authn');
 
 const router = express.Router();
 
-router.post('/api/constitution/analyze', requireAuth,  async(req, res)=>{
+router.post('/constitution/analyze', requireAuth,  async(req, res)=>{
     const {userId, userInfo, answers} = req.body;
 
     if(!userId || !userInfo || !answers){
@@ -21,8 +21,8 @@ router.post('/api/constitution/analyze', requireAuth,  async(req, res)=>{
 
     try{
         //users 데이터 업데이트
-        const  updateUserQuery = `UPDATE users SET age = ?, height = ?, weight = ? WHERE id = ? `;
-        await conn.execute(updateUserQuery, [age, height, weight, userId]);
+        const  updateUserQuery = `UPDATE users SET age = ?, height = ?, weight = ?, bmi = ? WHERE id = ? `;
+        await conn.execute(updateUserQuery, [age, height, weight, bmi, userId]);
 
         //설문응답 저장
         const answersData = answers.map(item=> [userId, item.questionId, item.answerId]);
@@ -204,7 +204,7 @@ router.post('/api/constitution/analyze', requireAuth,  async(req, res)=>{
 
         //설문 분석 결과 및 타입 저장
         const insertConstitutionQuery = `INSERT INTO user_constitution (user_id, constitution_type, score) values (?, ?, ?)`;
-        await pool.query(insertConstitutionQuery, [userId, constituion, maxScore]);
+        await conn.query(insertConstitutionQuery, [userId, constituion, maxScore]);
 
         await conn.commit();
 
