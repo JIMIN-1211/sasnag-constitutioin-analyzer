@@ -1,4 +1,4 @@
-package com.example.app.ui;
+package com.example.app2.ui;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.app.R;
+import com.example.app2.R;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.HashMap;
@@ -81,7 +81,7 @@ public class AgreementActivity extends AppCompatActivity {
 
         //  필수 동의가 되어야 활성화
         btnContinue.setOnClickListener(v -> {
-            Intent intent = new Intent(AgreementActivity.this, InfoActivity.class);
+            Intent intent = new Intent(AgreementActivity.this, EmailActivity.class); //InfoActivity -> EmailActivity로 수정
             startActivity(intent);
         });
 
