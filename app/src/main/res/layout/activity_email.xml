@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- 상단 바 (뒤로가기 + 제목) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/btnBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="←"
+                android:textSize="22sp"
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="정보 입력"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <!-- 안내 문구 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="고서에 기록될 당신의 정보예요."
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="16dp"/>
+
+
+        <!-- ========== 이메일 + 인증요청 ========== -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이메일"
+            android:textColor="#555555"
+            android:layout_marginBottom="6dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/etEmail"
+                android:layout_width="395dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#F2F2F2"
+                android:hint="example@example.com"
+                android:inputType="textEmailAddress"
+                android:padding="12dp" />
+
+            <Button
+                android:id="@+id/btnRequestCode"
+                android:layout_width="112dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:backgroundTint="#2E7D32"
+                android:text="인증번호 받기"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+
+        <!-- 인증번호 입력 + 타이머 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical">
+
+            <EditText
+                android:id="@+id/etCode"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:background="#F2F2F2"
+                android:hint="인증번호 6자리"
+                android:inputType="number"
+                android:maxLength="6"
+                android:padding="12dp"/>
+
+            <TextView
+                android:id="@+id/tvTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="03:00"
+                android:textColor="#D32F2F"
+                android:textStyle="bold"
+                android:layout_marginStart="8dp"/>
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#666666"
+            android:layout_marginTop="6dp"/>
+
+        <!-- 하단 다음 버튼 -->
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="가입 완료하기"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#2E7D32"
+            android:layout_marginTop="22dp"
+            android:layout_marginBottom="8dp"/>
+    </LinearLayout>
+</ScrollView>
