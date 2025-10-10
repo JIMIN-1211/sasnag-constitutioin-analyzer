@@ -14,7 +14,8 @@ router.post('/constitution/analyze', requireAuth,  async(req, res)=>{
         });
     }
 
-    const {age, height, weight, bmi} = userInfo;
+    const {age, height, weight} = userInfo;
+    const bmi = weight/(height * height);
 
     const conn = await pool.getConnection();
     await conn.beginTransaction();

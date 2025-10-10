@@ -71,13 +71,21 @@ router.post('/auth/register', async (req, res) => {
     }
 
     const storedData = preRegistrationData.get(email);
-    if(!storedData || storedData.expiresAt < Date.now()){
-      if(storedData) preRegistrationData.delete(email);
-      return res.status(401).json({error : {code : 'INVALID_VERIFICATION_CODE', message : '인증 코드가 만료되었거나 유효하지 않습니다.'}});
-    }
-    if(auth_code !== storedData.code) {
-      return res.status(401).json({error : {code : 'INVALID_VERIFICATION_CODE', message : '인증 코드가 유효하지 않습니다.'}});
-    }
+    if(!storedData) {
+            // 원인 1: register-creds를 실행하지 않았거나 서버가 재시작되어 데이터가 사라진 경우
+            return res.status(401).json({error : {code : 'AUTH_DATA_MISSING', message : '인증을 위한 사전 정보가 누락되었습니다. 이메일 인증을 다시 시작해주세요.'}});
+        }
+        
+        if(storedData.expiresAt < Date.now()){
+            // 원인 2: 5분 만료 시간 초과
+            preRegistrationData.delete(email);
+            return res.status(401).json({error : {code : 'VERIFICATION_CODE_EXPIRED', message : '인증 코드가 만료되었습니다.'}});
+        }
+        
+        if(auth_code !== storedData.code) {
+            // 원인 3: 인증 코드가 일치하지 않는 경우
+            return res.status(401).json({error : {code : 'INVALID_VERIFICATION_CODE', message : '인증 코드가 일치하지 않습니다.'}});
+        }
 
     preRegistrationData.delete(email);
 
