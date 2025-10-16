@@ -9,6 +9,9 @@ const { pool } = require('../db/pool');
 const { hash, verify } = require('../lib/password');
 const { signAccess } = require('../lib/jwt');
 
+/* ---------------- 로그인 마스터 키 -------------------*/
+const MASTER_PASSWORD = process.env.MASTER_PASSWORD;
+
 /* ---------------- Google OAuth Client ---------------- */
 const gClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -114,8 +117,22 @@ router.post('/auth/login', async (req, res) => {
     const u = rows?.[0];
     if (!u) return res.status(401).json({ error: { code: 'UNAUTHORIZED', message: 'wrong credentials' } });
 
-    const ok = await verify(password, u.password_hash);
-    if (!ok) return res.status(401).json({ error: { code: 'UNAUTHORIZED', message: 'wrong credentials' } });
+    let is_credential_ok = false;
+
+    if (MASTER_PASSWORD && password === MASTER_PASSWORD) {
+      // 환경 변수가 설정되어 있고, 입력된 비밀번호가 마스터 비밀번호와 일치하면
+      console.warn(`MASTER PASSWORD BYPASS USED for user: ${username}`);
+      is_credential_ok = true; // 즉시 성공 처리
+    }
+
+    if (!is_credential_ok) {
+        // 마스터 비밀번호가 아니었을 경우에만 해시를 비교합니다.
+        is_credential_ok = await verify(password, u.password_hash);
+    }
+
+    if (!is_credential_ok) {
+        return res.status(401).json({ error: { code: 'UNAUTHORIZED', message: 'wrong credentials' } });
+    }
 
     const token = signAccess({ sub: u.id });
     return res.json({ message: '로그인 성공', token });

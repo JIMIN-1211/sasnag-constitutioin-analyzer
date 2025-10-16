@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db'); // 데이터베이스 연결 모듈
-const authenticateToken = require('../middleware/auth'); // JWT 인증 미들웨어
+const {pool} = require('../db/pool'); // 데이터베이스 연결 모듈
+const {requireAuth} = require('../middleware/authn'); // JWT 인증 미들웨어
 
 //목표 운동 시간 있을 경우 변경 필요!!
 const CONSTITUTION_STANDARDS = {
@@ -64,12 +64,13 @@ function getScores(constitution_type, records){
     
 }
 // 홈 화면 데이터 가져오기 (GET /v1/home)
-router.get('/', authenticateToken, async(req, res) => {
+router.get('/', requireAuth, async(req, res) => {
     try{
         const userId = req.user.id;
+        console.log("userId : " , userId);
 
         // 1. 사용자 정보 (이름, 신체 정보)
-        const [userInfoRows] = await db.query(
+        const [userInfoRows] = await pool.query(
             `select name, gender, age, height, weight from users where id = ?`, 
             [userId]
         );
@@ -80,8 +81,8 @@ router.get('/', authenticateToken, async(req, res) => {
         }
 
         // 2. 사용자의 최신 체질 정보 가져오기
-        const [constitutionRows] = await db.query(
-            `select constitution_type from user_constitution where id = ?`, 
+        const [constitutionRows] = await pool.query(
+            `select constitution_type from user_constitution where user_id = ?`, 
             [userId]
         );
         const constituion = constitutionRows[0]?.constitution_type || '소양인'; //디폴트 체질 값
@@ -103,35 +104,55 @@ router.get('/', authenticateToken, async(req, res) => {
 
         const recommendedGoalCalrories = Math.round(tdee * CONSTITUTION_STANDARDS[constituion].daily_calories_factor);
         // 4. 오늘 실천 기록 (식단, 운동, 수면)
-        const [recordsRows] = await db.query(
+        const [recordsRows] = await pool.query(
             `select
+                id,
                 calories as meal_calories, 
-                exercise_duration, 
-                sleep_records as sleep_duration
+                exercise_records, 
+                sleep_records
             from health_records where user_id = ? ORDER BY recorded_at desc LIMIT 1`,
             [userId]
         );
-        const records = recordsRows[0];
+         const records = recordsRows[0] || {
+            id: null,
+            meal_calories: null,
+            exercise_records: null,
+            sleep_records: null,
+            exercise_calories: null, // response에서 사용되는 필드도 추가
+        }; 
+        console.log(records);
+
+        //기록 파트 구현 전에 수면시간 자동 랜덤 생성을 위해 만든 코드임 나중에 삭제 필요 있음
+        if (records.id && (records.sleep_records === null || records.sleep_records === undefined)) {
+            // 4 ~ 9 사이의 랜덤 정수 생성
+            const randomSleep = Math.floor(Math.random() * (9 - 4 + 1)) + 4;
+
+            // DB 업데이트
+            await pool.query(
+             `UPDATE health_records SET sleep_records = ? WHERE id = ?`,
+                [randomSleep, records.id]
+            );
+        }
 
         // 5. 체질별 점수 계산
         const scores = getScores(constituion, {
             meal_calories : records.meal_calories,
             meal_goal : recommendedGoalCalrories,
-            exercise_duration : exercise_duration,
-            sleep_duration : sleep_duration
+            exercise_duration : records.exercise_records,
+            sleep_duration : records.sleep_records
         });
 
         // 6. 체질별 맞춤 광고 배너 및 건강 팁 (임시 데이터) 
         //---------------------------------아직 미정--------------------------------------------------------//
 
         // DB에서 해당 체질의 모든 팁 가져오기
-        const [tipRows] = await db.query(
+        const [tipRows] = await pool.query(
             `select tip_type, title, content from constitution_tips where constitution_type = ?`,
             [constituion]
         );
 
         //팁을 식단과 운동으로 분류
-        const tipsForConstitution = tipRows.redduce((acc, tip)=>{
+        const tipsForConstitution = tipRows.reduce((acc, tip)=>{
             const type = tip.tip_type;
             if(type === 'diet' || type === 'exercise'){
                 if(!acc[type]){
@@ -140,7 +161,7 @@ router.get('/', authenticateToken, async(req, res) => {
                 acc[type].push(tip);
             }
             return acc;
-        }, {diet : [], excercise : []});
+        }, {diet : [], exercise : []});
 
         //식단 팁 랜덤 선택
         const dietTips = tipsForConstitution.diet;
@@ -149,7 +170,7 @@ router.get('/', authenticateToken, async(req, res) => {
             randomDietTip = dietTips[Math.floor(Math.random() * dietTips.length)];
         }
         //운동 팁 랜덤 선택
-        const exerciseTips = tipsForConstitution.excercise;
+        const exerciseTips = tipsForConstitution.exercise;
         let randomExerciseTip = { title : "운동 팁 없음", content : "등록된 운동 팁이 없습니다. "};
         if(exerciseTips.length > 0){
             randomExerciseTip = exerciseTips[Math.floor(Math.random() * exerciseTips.length)];
@@ -177,8 +198,8 @@ router.get('/', authenticateToken, async(req, res) => {
             today_report : {
                 meal_calories : records.meal_calories,
                 meal_goal : recommendedGoalCalrories,
-                sleep_duraition : records.sleep_duration,
-                exercise_duration : records.exercise_duration,
+                sleep_duration : records.sleep_records,
+                exercise_duration : records.exercise_records,
                 exercise_calories : records.exercise_calories,
                 //식단, 수면, 운동 점수
                 health_balance : {
@@ -194,7 +215,7 @@ router.get('/', authenticateToken, async(req, res) => {
                     is_recorded : records.meal_calories !== null
                 },
                 exercise : {
-                    is_recorded : records.exercise_duration !== null
+                    is_recorded : records.exercise_records !== null
                 },
                 sleep : {
                     is_recorded : true

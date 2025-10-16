@@ -260,15 +260,6 @@ INSERT IGNORE INTO master_foods (food_name, constitution_suitability, cal_per_gr
 ('닭고기 (가슴살)', '소음인', 0.165),
 ('찹쌀', '소음인', 0.370);
 
--- 샘플 유저 (필요 시 1회만 실행 권장)
-INSERT INTO users (id, username, password_hash, email, name, gender, birth_year, height, weight) VALUES
-(10, 'taeyangin_tester', '$2b$10$dummyHashForTest.vH3WJ', 'taeyang@test.com', '이태양', 'male', 1990, 180, 75),
-(11, 'soumin_tester',    '$2b$10$dummyHashForTest.vH3WJ', 'soumin@test.com',    '박소민', 'female', 1995, 160, 50);
-
--- 체질 정보 샘플
-INSERT INTO user_constitution (user_id, constitution_type, score) VALUES
-(10, '태양인', 15),
-(11, '소음인', 15);
 
 -- 확인용
 SHOW TABLES;
