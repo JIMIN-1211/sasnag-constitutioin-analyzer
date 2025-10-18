@@ -67,7 +67,8 @@ function getScores(constitution_type, records){
 router.get('/', requireAuth, async(req, res) => {
     try{
         const userId = req.user.id;
-        console.log("userId : " , userId);
+        // 쿼리 파라미터에서 조회할 날짜를 가져오고, 없으면 오늘 날짜를 기본값으로 설정합니다.
+        const targetDate = req.query.date || new Date().toISOString().split('T')[0]; // 'YYYY-MM-DD' 형식
 
         // 1. 사용자 정보 (이름, 신체 정보)
         const [userInfoRows] = await pool.query(
@@ -82,7 +83,7 @@ router.get('/', requireAuth, async(req, res) => {
 
         // 2. 사용자의 최신 체질 정보 가져오기
         const [constitutionRows] = await pool.query(
-            `select constitution_type from user_constitution where user_id = ?`, 
+            `select constitution_type from user_constitution where user_id = ? ORDER BY created_at DESC LIMIT 1`, 
             [userId]
         );
         const constituion = constitutionRows[0]?.constitution_type || '소양인'; //디폴트 체질 값
@@ -110,8 +111,9 @@ router.get('/', requireAuth, async(req, res) => {
                 calories as meal_calories, 
                 exercise_records, 
                 sleep_records
-            from health_records where user_id = ? ORDER BY recorded_at desc LIMIT 1`,
-            [userId]
+            from health_records where user_id = ? AND DATE(recorded_at) = ?
+            ORDER BY recorded_at desc LIMIT 1`,
+            [userId, targetDate]
         );
          const records = recordsRows[0] || {
             id: null,
@@ -221,7 +223,8 @@ router.get('/', requireAuth, async(req, res) => {
                     is_recorded : true
                 }
             },
-            health_tips : healthTips
+            health_tips : healthTips,
+            target_date : targetDate
             //추천 제품 광고 -- 6번과 연동
         });
     }catch (error) {
