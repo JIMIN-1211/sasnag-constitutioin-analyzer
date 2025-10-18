@@ -125,15 +125,21 @@ router.get('/', requireAuth, async(req, res) => {
         console.log(records);
 
         //기록 파트 구현 전에 수면시간 자동 랜덤 생성을 위해 만든 코드임 나중에 삭제 필요 있음
-        if (records.id && (records.sleep_records === null || records.sleep_records === undefined)) {
+        if (records.sleep_records === null || records.sleep_records === undefined) {
             // 4 ~ 9 사이의 랜덤 정수 생성
             const randomSleep = Math.floor(Math.random() * (9 - 4 + 1)) + 4;
-
+            if(records.id){
             // DB 업데이트
-            await pool.query(
-             `UPDATE health_records SET sleep_records = ? WHERE id = ?`,
-                [randomSleep, records.id]
-            );
+                await pool.query(
+                    `UPDATE health_records SET sleep_records = ? WHERE id = ?`,
+                    [randomSleep, records.id]
+                );
+            }else {
+                await pool.query(
+                    `INSERT health_records (user_id, sleep_records) VALUES (?, ?) `,
+                    [userId, randomSleep]
+                )
+            }
             records.sleep_records = randomSleep;
         }
 
