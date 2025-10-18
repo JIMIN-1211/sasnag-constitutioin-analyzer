@@ -134,6 +134,7 @@ router.get('/', requireAuth, async(req, res) => {
              `UPDATE health_records SET sleep_records = ? WHERE id = ?`,
                 [randomSleep, records.id]
             );
+            records.sleep_records = randomSleep;
         }
 
         // 5. 체질별 점수 계산
