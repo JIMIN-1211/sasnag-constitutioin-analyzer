@@ -1,12 +1,14 @@
 package com.example.app2.api;
 
 import com.google.gson.JsonObject;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
-
+import com.example.app2.models.LoginResponse;
+import com.example.app2.models.LoginRequest;
 public interface ApiService {
     @GET("healthz")
     Call<JsonObject> healthz();
@@ -26,4 +28,10 @@ public interface ApiService {
     @POST("constitution/analyze")
     Call<JsonObject> analyze(@Header("Authorization") String bearer,
                              @Body JsonObject body); // userId, userInfo, answers
+    @POST("auth/login")
+    Call<LoginResponse> login(@Body LoginRequest body);
+
+    @POST("constitution/analyze")
+    retrofit2.Call<com.example.app2.models.AnalyzeResponse> analyze(@Body com.example.app2.models.AnalyzeRequest body);
+
 }

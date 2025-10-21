@@ -15,7 +15,8 @@
         <!-- 앱 실행 시 제일 먼저 실행되는 화면 = Splash -->
         <activity
             android:name=".ui.SplashActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.App.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -36,8 +37,8 @@
         <activity android:name=".ui.QuestionActivity5"/>
         <activity android:name=".ui.QuestionActivity6"/>
         <activity android:name=".ui.ResultActivity"/>
-
-
+        <activity android:name=".ui.IdLoginActivity"/>
+        <activity android:name=".ui.RecordSimpleActivity"/>
 
 
     </application>

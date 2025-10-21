@@ -13,13 +13,13 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
 
-        // 2초 뒤 LoginActivity로 이동, 귀찮아서 일단 Main으로 이동하게 바꿈
-        new Handler().postDelayed(() -> {
-            Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        }, 2000);
+        // (테스트용) 혹시 남아있는 토큰도 제거해 두고
+        getSharedPreferences("app_prefs", MODE_PRIVATE).edit().remove("jwt").apply();
+
+        startActivity(new Intent(this, IdLoginActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK));
+        finish();
     }
+
 }

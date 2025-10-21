@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- 상단 -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="오늘 기록 입력 (테스트)"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:paddingBottom="12dp"/>
+
+        <!-- 날짜(옵션, 기본 오늘) -->
+        <EditText
+            android:id="@+id/etDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="날짜(YYYY-MM-DD) - 비우면 오늘로 처리"
+            android:inputType="text"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text" />
+
+        <!-- Meal -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="식사 (kcal)"
+            android:paddingTop="16dp"/>
+        <EditText
+            android:id="@+id/etMealKcal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="예: 2000"
+            android:inputType="number"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text" />
+
+        <!-- Sleep -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="수면 (시간)"
+            android:paddingTop="16dp"/>
+        <EditText
+            android:id="@+id/etSleepHours"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="예: 4"
+            android:inputType="number"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text" />
+
+        <!-- Exercise -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="운동 (분)"
+            android:paddingTop="16dp"/>
+        <EditText
+            android:id="@+id/etExerciseMinutes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="예: 120"
+            android:inputType="number"
+            android:padding="12dp"
+            android:background="@android:drawable/edit_text" />
+
+        <!-- 저장 버튼(비워둔 항목은 건너뜀) -->
+        <TextView
+            android:id="@+id/btnSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="기록 저장"
+            android:gravity="center"
+            android:textColor="#FFFFFF"
+            android:background="#2E7D32"
+            android:padding="14dp"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp"/>
+        <TextView
+            android:id="@+id/btnFetchHome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="홈 데이터 불러오기 (원시 JSON)"
+            android:gravity="center"
+            android:textColor="#FFFFFF"
+            android:background="#455A64"
+            android:padding="14dp"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp"/>
+
+        <TextView
+            android:id="@+id/tvHomeJson"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:paddingTop="10dp"/>
+
+        <!-- 결과 로그 -->
+        <TextView
+            android:id="@+id/tvLog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="결과 로그가 여기에 표시됩니다."
+            android:textSize="13sp"
+            android:paddingTop="12dp"
+            android:textColor="#444444"/>
+
+    </LinearLayout>
+</ScrollView>
