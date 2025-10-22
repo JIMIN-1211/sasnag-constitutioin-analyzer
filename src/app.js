@@ -7,12 +7,14 @@ const morgan = require('morgan');
 const auth = require('./routes/auth');
 const users = require('./routes/users'); // 선택
 const survey = require('./routes/survey');
+const mypage = require('./routes/mypage');
 
 const app = express();
 app.use(express.json());
 app.use(cors({ origin: true }));
 app.use(helmet());
 app.use(morgan('dev'));
+app.use('/v1', mypage);
 
 app.get('/v1/healthz', (_req, res) => {
   res.json({ ok: true, time: new Date().toISOString() });
