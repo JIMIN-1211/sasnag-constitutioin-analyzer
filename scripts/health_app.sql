@@ -105,15 +105,36 @@ CREATE TABLE IF NOT EXISTS user_constitution (
 CREATE TABLE IF NOT EXISTS health_records (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_id BIGINT NOT NULL,
+
+    -- 칼로리 수지 (diet_records, exercise_records 테이블에서 합산하여 업데이트)
     exercise_records INT NULL,
     sleep_records INT NULL,
     calories INT NULL,
+
+    -- 기타 일일 요약 지표
     stress_level INT NULL,
     water_intake_ml INT NULL,
+    
     recorded_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_records_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     KEY idx_records_user_time (user_id, recorded_at)
 );
+
+-- 날짜 데이터에서 시간 부분을 제거 하고 날짜 부분만 남김
+UPDATE health_records SET recorded_at = DATE(recorded_at);
+
+ALTER TABLE health_records MODIFY COLUMN recorded_at DATE NOT NULL;
+ALTER TABLE health_records
+    CHANGE COLUMN calories intake_calories INT DEFAULT 0 NULL;
+ALTER TABLE health_records
+    DROP COLUMN exercise_records;
+ALTER TABLE health_records
+    ADD COLUMN exercise_calories INT DEFAULT 0 AFTER intake_calories;
+ALTER TABLE health_records
+    CHANGE COLUMN sleep_records sleep_duration_hours INT NULL;
+-- 한 사용자가 하루에 하나의 건강 요약 레코드만 가질 수 있도록 강제합니다.
+ALTER TABLE health_records
+    ADD UNIQUE KEY uk_user_date (user_id, recorded_at);
 
 -- ===== calories_burned 컬럼이 없을 때만 추가 (버전 호환용) =====
 DELIMITER //
@@ -197,6 +218,8 @@ CREATE TABLE IF NOT EXISTS meal_logs (
     CONSTRAINT fk_meal_food FOREIGN KEY (food_id) REFERENCES master_foods(id),
     KEY idx_meal_user_time (user_id, recorded_at)
 );
+
+ALTER TABLE meal_logs ADD COLUMN meal_type VARCHAR(50) NOT NULL;
 
 -- 1) 태양인 설명
 INSERT INTO constitution_descriptions(constitution_type, title_ko, summary, health_trends, life_management) VALUES

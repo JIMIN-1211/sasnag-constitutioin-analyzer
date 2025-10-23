@@ -45,14 +45,20 @@ function getScores(constitution_type, records){
     }
     
     let exerciseScore = 0;
-    if(records.exercise_duration){
-        const ratio = records.exercise_duration / standards.exercise_duration;
+    const durationGoal = standards.exercise_duration;
+    const CALORIES_PER_MINUTE = 5; 
+    const exerciseGoalCalories = durationGoal * CALORIES_PER_MINUTE; 
+
+    // 운동 점수: (기록된 소모 칼로리) / (체질 기반 목표 소모 칼로리)
+    if(records.exercise_calories){
+        const ratio = records.exercise_calories / exerciseGoalCalories;
         exerciseScore = Math.min(100, Math.round(ratio * 100));
     }
 
     let sleepScore = 0;
-    if(records.sleep_duration){
-        const ratio = records.sleep_duration / standards.sleep_duration;
+    if(records.sleep_duration_hours){
+        const sleepHours = records.sleep_duration_hours; 
+        const ratio = sleepHours / standards.sleep_duration;
         sleepScore = Math.min(100, Math.round(ratio * 100));
     }
 
@@ -108,9 +114,9 @@ router.get('/', requireAuth, async(req, res) => {
         const [recordsRows] = await pool.query(
             `select
                 id,
-                calories as meal_calories, 
-                exercise_records, 
-                sleep_records
+                intake_calories as meal_calories, 
+                exercise_calories, 
+                sleep_duration_hours
             from health_records where user_id = ? AND DATE(recorded_at) = ?
             ORDER BY recorded_at desc LIMIT 1`,
             [userId, targetDate]
@@ -118,26 +124,25 @@ router.get('/', requireAuth, async(req, res) => {
          const records = recordsRows[0] || {
             id: null,
             meal_calories: null,
-            exercise_records: null,
-            sleep_records: null,
-            exercise_calories: null, // response에서 사용되는 필드도 추가
+            exercise_calories: null,
+            sleep_duration_hours: null,
         }; 
         console.log(records);
 
         //기록 파트 구현 전에 수면시간 자동 랜덤 생성을 위해 만든 코드임 나중에 삭제 필요 있음
-        if (records.sleep_records === null || records.sleep_records === undefined) {
+        if (records.sleep_duration_hours === null || records.sleep_duration_hours === undefined) {
             // 4 ~ 9 사이의 랜덤 정수 생성
             const randomSleep = Math.floor(Math.random() * (9 - 4 + 1)) + 4;
             if(records.id){
             // DB 업데이트
                 await pool.query(
-                    `UPDATE health_records SET sleep_records = ? WHERE id = ?`,
+                    `UPDATE health_records SET sleep_duration_hours = ? WHERE id = ?`,
                     [randomSleep, records.id]
                 );
             }else {
                 await pool.query(
-                    `INSERT health_records (user_id, sleep_records) VALUES (?, ?) `,
-                    [userId, randomSleep]
+                    `INSERT health_records (user_id, recorded_at, sleep_duration_hours) VALUES (?, ?,?) `,
+                    [userId, targetDate, randomSleep]
                 )
             }
             records.sleep_records = randomSleep;
@@ -147,8 +152,8 @@ router.get('/', requireAuth, async(req, res) => {
         const scores = getScores(constituion, {
             meal_calories : records.meal_calories,
             meal_goal : recommendedGoalCalrories,
-            exercise_duration : records.exercise_records,
-            sleep_duration : records.sleep_records
+            exercise_calories : records.exercise_calories,
+            sleep_duration_hours : records.sleep_duration_hours
         });
 
         // 6. 체질별 맞춤 광고 배너 및 건강 팁 (임시 데이터) 
@@ -207,8 +212,7 @@ router.get('/', requireAuth, async(req, res) => {
             today_report : {
                 meal_calories : records.meal_calories,
                 meal_goal : recommendedGoalCalrories,
-                sleep_duration : records.sleep_records,
-                exercise_duration : records.exercise_records,
+                sleep_duration_hours : records.sleep_duration_hours,
                 exercise_calories : records.exercise_calories,
                 //식단, 수면, 운동 점수
                 health_balance : {
@@ -224,7 +228,7 @@ router.get('/', requireAuth, async(req, res) => {
                     is_recorded : records.meal_calories !== null
                 },
                 exercise : {
-                    is_recorded : records.exercise_records !== null
+                    is_recorded : records.exercise_calories !== null
                 },
                 sleep : {
                     is_recorded : true

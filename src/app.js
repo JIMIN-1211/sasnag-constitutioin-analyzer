@@ -8,6 +8,8 @@ const homeRouter = require('./routes/home');
 const auth = require('./routes/auth');
 const users = require('./routes/users'); // 선택
 const survey = require('./routes/survey');
+const exerciseRecord = require('./routes/exercise'); 
+const dietReocord = require('./routes/meal');
 
 
 const app = express();
@@ -24,5 +26,7 @@ app.use('/v1/home', homeRouter);
 app.use('/v1', auth);
 app.use('/v1', users); // 선택
 app.use('/v1', survey);
+app.use('/v1/exercise', exerciseRecord); 
+app.use('/v1/diet', dietReocord);
 
 module.exports = { app };
