@@ -10,7 +10,7 @@ const survey = require('./routes/survey');
 const exerciseRecord = require('./routes/exercise'); 
 const dietReocord = require('./routes/meal');
 const mypage = require('./routes/mypage');
-
+const products = require('./routes/product');
 
 const app = express();
 app.use(express.json());
@@ -28,5 +28,6 @@ app.use('/v1', users); // 선택
 app.use('/v1', survey);
 app.use('/v1/exercise', exerciseRecord); 
 app.use('/v1/diet', dietReocord);
+app.use('/api', products);
 
 module.exports = { app };
