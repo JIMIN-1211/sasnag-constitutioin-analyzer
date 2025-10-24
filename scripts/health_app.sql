@@ -283,6 +283,38 @@ INSERT IGNORE INTO master_foods (food_name, constitution_suitability, cal_per_gr
 ('닭고기 (가슴살)', '소음인', 0.165),
 ('찹쌀', '소음인', 0.370);
 
+-- 체질별 추천 제품 링크
+CREATE TABLE IF NOT EXISTS constitution_products (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    constitution_type VARCHAR(20) NOT NULL,   -- 체질명
+    product_name VARCHAR(100) NOT NULL,       -- 제품 이름
+    coupang_link VARCHAR(255) NOT NULL,       -- 쿠팡 링크
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. 샘플 데이터 삽입 (4체질 × 5개씩)
+INSERT INTO constitution_products (constitution_type, product_name, coupang_link) VALUES
+('태양인', '밀크씨슬', 'https://www.coupang.com/np/search?q=밀크씨슬'),
+('태양인', '루테인 오메가3', 'https://www.coupang.com/np/search?q=루테인+오메가3'),
+('태양인', '비타민B 컴플렉스', 'https://www.coupang.com/np/search?q=비타민B+컴플렉스'),
+('태양인', '홍삼정 에브리타임', 'https://www.coupang.com/np/search?q=홍삼정+에브리타임'),
+('태양인', '디톡스 주스', 'https://www.coupang.com/np/search?q=디톡스+주스'),
+('소양인', '이온음료', 'https://www.coupang.com/np/search?q=이온음료'),
+('소양인', '알로에 젤리', 'https://www.coupang.com/np/search?q=알로에+젤리'),
+('소양인', '마그네슘 보충제', 'https://www.coupang.com/np/search?q=마그네슘+보충제'),
+('소양인', '히비스커스차', 'https://www.coupang.com/np/search?q=히비스커스차'),
+('소양인', '유산균 보충제', 'https://www.coupang.com/np/search?q=유산균+보충제'),
+('태음인', '가르시니아 캄보지아', 'https://www.coupang.com/np/search?q=가르시니아+캄보지아'),
+('태음인', '홍삼', 'https://www.coupang.com/np/search?q=홍삼'),
+('태음인', '프로바이오틱스', 'https://www.coupang.com/np/search?q=프로바이오틱스'),
+('태음인', '유산균 요구르트', 'https://www.coupang.com/np/search?q=유산균+요구르트'),
+('태음인', '공기청정기', 'https://www.coupang.com/np/search?q=공기청정기'),
+('소음인', '생강차', 'https://www.coupang.com/np/search?q=생강차'),
+('소음인', '프로바이오틱스', 'https://www.coupang.com/np/search?q=프로바이오틱스'),
+('소음인', '비타민C', 'https://www.coupang.com/np/search?q=비타민C'),
+('소음인', '홍삼차', 'https://www.coupang.com/np/search?q=홍삼차'),
+('소음인', '찜질기', 'https://www.coupang.com/np/search?q=찜질기');
+
 
 -- 확인용
 SHOW TABLES;
@@ -290,3 +322,4 @@ DESC users;
 DESC survey_answers;
 DESC user_constitution;
 DESC health_records;
+DESC constitution_products;
