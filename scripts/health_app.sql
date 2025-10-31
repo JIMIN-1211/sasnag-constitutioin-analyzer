@@ -292,37 +292,38 @@ UPDATE master_foods SET cal_per_gram = 0.45, unit_gram = 100 WHERE food_name = '
 UPDATE master_foods SET cal_per_gram = 1.65, unit_gram = 100 WHERE food_name = '닭고기 (가슴살)';
 UPDATE master_foods SET cal_per_gram = 3.70, unit_gram = 100 WHERE food_name = '찹쌀';
 
--- 체질별 추천 제품 링크
-CREATE TABLE IF NOT EXISTS constitution_products (
-    id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    constitution_type VARCHAR(20) NOT NULL,   -- 체질명
-    product_name VARCHAR(100) NOT NULL,       -- 제품 이름
-    coupang_link VARCHAR(255) NOT NULL,       -- 쿠팡 링크
+
+-- =========================================================
+-- 공용 추천 상품 테이블 (체질 무관 랜덤 추천)
+-- =========================================================
+CREATE TABLE IF NOT EXISTS constitution_recommendations (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    constitution_type VARCHAR(20) NULL,
+    product_name VARCHAR(200) NOT NULL,
+    image_url VARCHAR(500) NULL,
+    link_url  VARCHAR(800) NOT NULL,
+    price_krw INT NULL,
+    vendor VARCHAR(100) NULL,
+    priority INT NOT NULL DEFAULT 100,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. 샘플 데이터 삽입 (4체질 × 5개씩)
-INSERT INTO constitution_products (constitution_type, product_name, coupang_link) VALUES
-('태양인', '밀크씨슬', 'https://www.coupang.com/np/search?q=밀크씨슬'),
-('태양인', '루테인 오메가3', 'https://www.coupang.com/np/search?q=루테인+오메가3'),
-('태양인', '비타민B 컴플렉스', 'https://www.coupang.com/np/search?q=비타민B+컴플렉스'),
-('태양인', '홍삼정 에브리타임', 'https://www.coupang.com/np/search?q=홍삼정+에브리타임'),
-('태양인', '디톡스 주스', 'https://www.coupang.com/np/search?q=디톡스+주스'),
-('소양인', '이온음료', 'https://www.coupang.com/np/search?q=이온음료'),
-('소양인', '알로에 젤리', 'https://www.coupang.com/np/search?q=알로에+젤리'),
-('소양인', '마그네슘 보충제', 'https://www.coupang.com/np/search?q=마그네슘+보충제'),
-('소양인', '히비스커스차', 'https://www.coupang.com/np/search?q=히비스커스차'),
-('소양인', '유산균 보충제', 'https://www.coupang.com/np/search?q=유산균+보충제'),
-('태음인', '가르시니아 캄보지아', 'https://www.coupang.com/np/search?q=가르시니아+캄보지아'),
-('태음인', '홍삼', 'https://www.coupang.com/np/search?q=홍삼'),
-('태음인', '프로바이오틱스', 'https://www.coupang.com/np/search?q=프로바이오틱스'),
-('태음인', '유산균 요구르트', 'https://www.coupang.com/np/search?q=유산균+요구르트'),
-('태음인', '공기청정기', 'https://www.coupang.com/np/search?q=공기청정기'),
-('소음인', '생강차', 'https://www.coupang.com/np/search?q=생강차'),
-('소음인', '프로바이오틱스', 'https://www.coupang.com/np/search?q=프로바이오틱스'),
-('소음인', '비타민C', 'https://www.coupang.com/np/search?q=비타민C'),
-('소음인', '홍삼차', 'https://www.coupang.com/np/search?q=홍삼차'),
-('소음인', '찜질기', 'https://www.coupang.com/np/search?q=찜질기');
+-- 기본 상품 4개 (공용 랜덤)
+INSERT IGNORE INTO constitution_recommendations
+  (constitution_type, product_name, image_url, link_url, price_krw, vendor, priority)
+VALUES
+(NULL, '캘리포니아 유기농 레몬즙', NULL,
+ 'https://allbio.kr/product/%EC%BA%98%EB%A6%AC%ED%8F%AC%EB%8B%88%EC%95%84-%EC%9C%A0%EA%B8%B0%EB%86%8D-%EB%A0%88%EB%AA%AC%EC%A6%99-20g15%ED%8F%AC-1%EB%B0%95%EC%8A%A4/179/category/120/display/1/',
+ NULL, '올바이오', 10),
+(NULL, '유기농 애플사이다비니거 애사비 스틱 1박스', NULL,
+ 'https://allbio.kr/product/%EC%9C%A0%EA%B8%B0%EB%86%8D-%EC%95%A0%ED%94%8C%EC%82%AC%EC%9D%B4%EB%8B%A4%EB%B9%84%EB%8B%88%EA%B1%B0-%EC%95%A0%EC%82%AC%EB%B9%84-%EC%8A%A4%ED%8B%B1-1%EB%B0%95%EC%8A%A4/258/category/1/display/2/?icid=ETC.product_listmain_1',
+ NULL, '올바이오', 20),
+(NULL, '저속노화밥 발효귀리 500g', NULL,
+ 'https://allbio.kr/product/%EC%A0%80%EC%86%8D%EB%85%B8%ED%99%94%EB%B0%95-%EB%B0%9C%ED%9A%A8%EA%B7%80%EB%A6%AC-500g/133/category/120/display/1/',
+ NULL, '올바이오', 30),
+(NULL, '발효잡곡 400g 3종 세트 1호(귀리/병아리콩/렌틸콩)', NULL,
+ 'https://allbio.kr/product/%EB%B0%9C%ED%9A%A8%EC%9E%A1%EA%B3%A1-400g-3%EC%A2%85-%EC%84%B8%ED%8A%B8-1%ED%98%B8%EA%B7%80%EB%A6%AC%EB%B3%91%EC%95%84%EB%A6%AC%EC%BD%A9%EB%A0%8C%ED%8B%B8%EC%BD%A9/69/category/120/display/1/',
+ NULL, '올바이오', 40);
 
 
 -- 확인용
@@ -331,4 +332,4 @@ DESC users;
 DESC survey_answers;
 DESC user_constitution;
 DESC health_records;
-DESC constitution_products;
+DESC constitution_recommendations;
