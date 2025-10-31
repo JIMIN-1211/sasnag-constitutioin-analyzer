@@ -5,25 +5,25 @@ const {requireAuth} = require('../middleware/authn'); // JWT 인증 미들웨어
 
 //목표 운동 시간 있을 경우 변경 필요!!
 const CONSTITUTION_STANDARDS = {
-    '태양인' : {
+    'taeyangin' : {
         exercise_duration : 30,
         meal_calories_ratio : 0.9,
         sleep_duration : 6,
         daily_calories_factor : 0.9
     },
-    '태음인' : {
+    'taeumin' : {
         exercise_duration : 60,
         meal_calories_ratio : 0.8,
         sleep_duration : 7,
         daily_calories_factor : 1.1
     },
-    '소양인' : {
+    'soyangin' : {
         exercise_duration : 45,
         meal_calories_ratio : 1.0,
         sleep_duration : 7,
         daily_calories_factor : 1.0
     },
-    '소음인' : {
+    'souemin' : {
         exercise_duration : 30,
         meal_calories_ratio : 1.1,
         sleep_duration : 8,
@@ -108,7 +108,6 @@ router.get('/', requireAuth, async(req, res) => {
         //TDEE(총 일일 에너지 소비량) 계산
         const activityFactor = 1.4;
         const tdee  = bmr * activityFactor;
-
         const recommendedGoalCalrories = Math.round(tdee * CONSTITUTION_STANDARDS[constituion].daily_calories_factor);
         // 4. 오늘 실천 기록 (식단, 운동, 수면)
         const [recordsRows] = await pool.query(

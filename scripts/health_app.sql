@@ -283,6 +283,15 @@ INSERT IGNORE INTO master_foods (food_name, constitution_suitability, cal_per_gr
 ('닭고기 (가슴살)', '소음인', 0.165),
 ('찹쌀', '소음인', 0.370);
 
+UPDATE master_foods SET cal_per_gram = 0.92, unit_gram = 100 WHERE food_name = '메밀';
+UPDATE master_foods SET cal_per_gram = 0.82, unit_gram = 100 WHERE food_name = '전복';
+UPDATE master_foods SET cal_per_gram = 1.37, unit_gram = 100 WHERE food_name = '쇠고기 (안심)';
+UPDATE master_foods SET cal_per_gram = 4.18, unit_gram = 100 WHERE food_name = '콩 (대두)';
+UPDATE master_foods SET cal_per_gram = 2.05, unit_gram = 100 WHERE food_name = '돼지고기 (목살)';
+UPDATE master_foods SET cal_per_gram = 0.45, unit_gram = 100 WHERE food_name = '해삼';
+UPDATE master_foods SET cal_per_gram = 1.65, unit_gram = 100 WHERE food_name = '닭고기 (가슴살)';
+UPDATE master_foods SET cal_per_gram = 3.70, unit_gram = 100 WHERE food_name = '찹쌀';
+
 -- 체질별 추천 제품 링크
 CREATE TABLE IF NOT EXISTS constitution_products (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,

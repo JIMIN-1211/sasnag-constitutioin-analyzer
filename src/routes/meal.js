@@ -51,13 +51,20 @@ async function calculateTotalCalories(recordId, connection) {
     if (recordInfo.length === 0) return 0;
 
     const { user_id, recorded_at } = recordInfo[0];
+    let targetDateString = recorded_at;
+    if (recorded_at instanceof Date) {
+        const year = recorded_at.getFullYear();
+        const month = String(recorded_at.getMonth() + 1).padStart(2, '0');
+        const day = String(recorded_at.getDate()).padStart(2, '0');
+        targetDateString = `${year}-${month}-${day}`;
+    }
     
     // 2. meal_logs 테이블에서 해당 사용자/날짜의 calories_consumed_session을 합산.
     const [totalRows] = await connection.query(
         `SELECT SUM(calories_consumed_session) AS total_calories 
          FROM meal_logs 
          WHERE user_id = ? AND DATE(recorded_at) = ?`,
-        [user_id, recorded_at] // recorded_at는 health_records에서 DATE 타입.
+        [user_id, targetDateString] // recorded_at는 health_records에서 DATE 타입.
     );
     
     return totalRows[0].total_calories || 0;
@@ -84,12 +91,13 @@ router.post('/', requireAuth, async (req, res) => {
         await connection.beginTransaction();
 
         // 1. master_foods에서 칼로리 밀도를 조회하여 session 칼로리를 계산.
-        const caloriesPer100g = await getCalorieDensity(food_id, connection);
+        const caloriesPerGram = await getCalorieDensity(food_id, connection);
         // 칼로리 계산: (섭취량 / 100) * 100g당 칼로리
-        const caloriesConsumedSession = (intake_gram / 100) * caloriesPer100g; 
+        const caloriesConsumedSession = intake_gram * caloriesPerGram;
 
         // 2. health_records ID 가져오기 (총 칼로리 업데이트를 위해 필요)
         const recordId = await upsertHealthRecord(userId, targetDate, connection); 
+        console.log("recordID: ",recordId);
 
         // 3. meal_logs에 상세 식단 기록을 추가. (meal_type 컬럼에 값 저장)
         await connection.query(
@@ -100,6 +108,8 @@ router.post('/', requireAuth, async (req, res) => {
 
         // 4. 해당 날짜의 총 칼로리를 다시 계산.
         const totalCalories = await calculateTotalCalories(recordId, connection);
+        console.log(totalCalories);
+        console.log(recordId);
 
         // 5. health_records의 총 섭취 칼로리를 업데이트.
         await connection.query(
