@@ -230,11 +230,22 @@ const description = descRows[0] || null;
         await conn.commit();
         
 
+
+        // (추가) 랜덤 추천 상품 1개 조회 (체질 무관)
+const [recommendRows] = await conn.query(
+  `SELECT product_name, image_url, link_url, vendor
+     FROM constitution_recommendations
+    ORDER BY RAND()
+    LIMIT 1`
+);
+const recommendation = recommendRows[0] || null;
+
+
         res.status(200).json({
             message : "체질 분석이 완료되었습니다. ", 
             constitution : constitution,
             score : maxScore,
-            description //  { title_ko, summary, health_trends, life_management }
+            description, recommendation //  { title_ko, summary, health_trends, life_management }
         });
 
     }catch(error){
