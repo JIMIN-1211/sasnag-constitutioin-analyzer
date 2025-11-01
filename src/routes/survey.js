@@ -5,7 +5,7 @@ const {requireAuth}  = require('../middleware/authn');
 
 const router = express.Router();
 
-router.post('/api/constitution/analyze', requireAuth,  async(req, res)=>{
+router.post('/constitution/analyze', requireAuth,  async(req, res)=>{
     const {userId, userInfo, answers} = req.body;
 
     if(!userId || !userInfo || !answers){
@@ -14,15 +14,16 @@ router.post('/api/constitution/analyze', requireAuth,  async(req, res)=>{
         });
     }
 
-    const {age, height, weight, bmi} = userInfo;
+    const {age, height, weight} = userInfo;
+    const bmi = weight/(height * height);
 
     const conn = await pool.getConnection();
     await conn.beginTransaction();
 
     try{
         //users 데이터 업데이트
-        const  updateUserQuery = `UPDATE users SET age = ?, height = ?, weight = ? WHERE id = ? `;
-        await conn.execute(updateUserQuery, [age, height, weight, userId]);
+        const  updateUserQuery = `UPDATE users SET age = ?, height = ?, weight = ?, bmi = ? WHERE id = ? `;
+        await conn.execute(updateUserQuery, [age, height, weight, bmi, userId]);
 
         //설문응답 저장
         const answersData = answers.map(item=> [userId, item.questionId, item.answerId]);
@@ -192,26 +193,59 @@ router.post('/api/constitution/analyze', requireAuth,  async(req, res)=>{
         });
 
 
-        let constituion = 'unknown';
+        let constitution = 'unknown';
         let maxScore = 0;
 
         for(const type in scores){
             if(scores[type] > maxScore){
                 maxScore = scores[type];
-                constituion = type;
+                constitution = type;
             }
         }
 
         //설문 분석 결과 및 타입 저장
         const insertConstitutionQuery = `INSERT INTO user_constitution (user_id, constitution_type, score) values (?, ?, ?)`;
-        await pool.query(insertConstitutionQuery, [userId, constituion, maxScore]);
+        await conn.query(insertConstitutionQuery, [userId, constitution, maxScore]);
+
+        // (추가) 영문 키 → 한글 체질명 매핑 (설명 테이블 조인용)
+      const keyToKo = {
+                     taeyangin: '태양인',
+                     soyangin:  '소양인',
+                     taeumin:   '태음인',
+                     souemin:   '소음인'
+                 
+                    };
+    const constitutionKo = keyToKo[constitution] || constitution;
+
+// (추가) constitution_descriptions에서 결과 화면용 설명 조회
+const [descRows] = await conn.query(
+  `SELECT title_ko, summary, health_trends, life_management
+     FROM constitution_descriptions
+    WHERE constitution_type = ?`,
+  [constitutionKo]
+);
+const description = descRows[0] || null;
+
 
         await conn.commit();
+        
+
+
+        // (추가) 랜덤 추천 상품 1개 조회 (체질 무관)
+const [recommendRows] = await conn.query(
+  `SELECT product_name, image_url, link_url, vendor
+     FROM constitution_recommendations
+    ORDER BY RAND()
+    LIMIT 1`
+);
+const recommendation = recommendRows[0] || null;
+
 
         res.status(200).json({
             message : "체질 분석이 완료되었습니다. ", 
-            constitution : constituion,
-            score : maxScore
+            constitution : constitution,
+            score : maxScore,
+            description, recommendation //  { title_ko, summary, health_trends, life_management }
         });
 
     }catch(error){
@@ -225,5 +259,3 @@ router.post('/api/constitution/analyze', requireAuth,  async(req, res)=>{
 });
 
 module.exports = router;
-
-
