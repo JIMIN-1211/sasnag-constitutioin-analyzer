@@ -39,24 +39,25 @@ public class BodyInfoActivity extends AppCompatActivity {
         etWeight.addTextChangedListener(watcher);
 
         btnNext.setOnClickListener(v -> {
-            // 입력값 가져오기
-            String height = etHeight.getText().toString().trim();
-            String weight = etWeight.getText().toString().trim();
+            String hStr = etHeight.getText().toString().trim();
+            String wStr = etWeight.getText().toString().trim();
 
-            // 질문 페이지로 이동
-            Intent intent = new Intent(BodyInfoActivity.this, QuestionActivity.class);
-            intent.putExtra("height", height);
-            intent.putExtra("weight", weight);
+            float heightCm = 0f, weightKg = 0f;
+            try { heightCm = Float.parseFloat(hStr); } catch (Exception ignore) {}
+            try { weightKg = Float.parseFloat(wStr); } catch (Exception ignore) {}
+
+            if (heightCm <= 0 || weightKg <= 0) {
+                // 간단 가드 (선택)
+                return;
+            }
+
+            Intent intent = new Intent(BodyInfoActivity.this, QuestionsSingleActivity.class);
+            intent.putExtra("heightCm", heightCm);
+            intent.putExtra("weightKg", weightKg);
             startActivity(intent);
         });
 
         // 뒤로가기 → 앱 종료
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                moveTaskToBack(true);
-            }
-        });
     }
 
     private void validateForm() {

@@ -13,145 +13,206 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.app2.R;
 import com.example.app2.models.Question;
+import com.example.app2.survey.AnswerStore;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.QuestionViewHolder> {
+/**
+ * 3지선다 설문 어댑터 (단일 페이지 스크롤)
+ * - item_question.xml (tvQuestion, btnOption1~3)과 호환
+ * - AnswerStore(질문ID 기준)와 내부 selections(포지션 기준) 양쪽 복원
+ * - 선택 시 진행률 콜백 제공
+ */
+public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.VH> {
+
+    /** 선택 건수 바뀔 때 알려주고 싶을 때 (예: 진행률/제출버튼 활성화) */
+    public interface OnAnswerChanged {
+        void onChanged(int answeredCount, int totalCount);
+    }
 
     private final Context context;
-    private final List<Question> questionList;
-
-    // key = position(0..N-1), value = 선택 인덱스(0..2). 미선택은 저장하지 않음(기본 -1로 취급)
+    private final List<Question> items = new ArrayList<>();
+    // key = position(0..N-1), value = 선택 인덱스(0..2). (-1은 미선택)
     private final SparseIntArray selections = new SparseIntArray();
+    private final OnAnswerChanged progressListener;
 
-    public QuestionAdapter(Context context, List<Question> questionList) {
+    public QuestionAdapter(@NonNull Context context,
+                           @NonNull List<Question> questionList,
+                           OnAnswerChanged listener) {
         this.context = context;
-        this.questionList = questionList != null ? questionList : new ArrayList<>();
-        setHasStableIds(false);
+        if (questionList != null) this.items.addAll(questionList);
+        this.progressListener = listener;
+        setHasStableIds(true);
+    }
+    public QuestionAdapter(@NonNull Context context,
+                           @NonNull List<Question> questionList) {
+        this(context, questionList, null); // 3-인자 생성자에 위임
+    }
+
+    // Question의 고유 id가 있으면 안정적인 ID로 사용
+    @Override public long getItemId(int position) {
+        if (position < 0 || position >= items.size()) return RecyclerView.NO_ID;
+        return items.get(position).getId();
     }
 
     @NonNull
     @Override
-    public QuestionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_question, parent, false);
-        return new QuestionViewHolder(view);
+    public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(context).inflate(R.layout.item_question, parent, false);
+        return new VH(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull QuestionViewHolder holder, int position) {
-        Question question = questionList.get(position);
+    public void onBindViewHolder(@NonNull VH h, int position) {
+        Question q = items.get(position);
 
-        // 제목
-        holder.tvQuestion.setText(question.getId() + ". " + question.getQuestionText());
+        // 질문 텍스트
+        h.tvQuestion.setText(q.getId() + ". " + q.getQuestionText());
 
-        // 답변 버튼 텍스트 (최소 3개 가정)
-        List<String> opts = question.getOptions();
-        holder.btnOption1.setText(opts.size() > 0 ? opts.get(0) : "옵션1");
-        holder.btnOption2.setText(opts.size() > 1 ? opts.get(1) : "옵션2");
-        holder.btnOption3.setText(opts.size() > 2 ? opts.get(2) : "옵션3");
+        // 보기 텍스트
+        List<String> opts = q.getOptions();
+        h.btn1.setText(opts.size() > 0 ? opts.get(0) : "옵션1");
+        h.btn2.setText(opts.size() > 1 ? opts.get(1) : "옵션2");
+        h.btn3.setText(opts.size() > 2 ? opts.get(2) : "옵션3");
 
-        // 저장된 선택 상태 복원 (우선순위: selections -> model)
-        int saved = selections.get(position, -1);
-        if (saved == -1) saved = question.getSelectedOption(); // 0..2 or -1
+        // ----- 선택 상태 복원 -----
+        // 1) 전역 저장소(QuestionId 기준)가 최우선
+        int stored = AnswerStore.get().get(q.getId()); // 0..2 또는 -1
+        // 2) 없으면 - 포지션 기준 selections / 모델의 selectedOption 순서로 폴백
+        int sel0 = (stored >= 0)
+                ? stored
+                : selections.get(position,
+                q.getSelectedOption() >= 0 ? q.getSelectedOption() : -1);
 
-        resetButtonStates(holder);
-        if (saved >= 0) {
-            highlightButton(holder, saved);
-        }
+        applySelectedState(h, sel0);
 
-        // 클릭 리스너: 즉시 UI 반영 + 상태 저장
-        holder.btnOption1.setOnClickListener(v -> select(holder, 0));
-        holder.btnOption2.setOnClickListener(v -> select(holder, 1));
-        holder.btnOption3.setOnClickListener(v -> select(holder, 2));
+        // ----- 클릭 핸들러 -----
+        h.btn1.setOnClickListener(v -> handleSelect(h, 0));
+        h.btn2.setOnClickListener(v -> handleSelect(h, 1));
+        h.btn3.setOnClickListener(v -> handleSelect(h, 2));
     }
 
-    private void select(@NonNull QuestionViewHolder holder, int idx0) {
-        // 호환성 있는 위치 API
-        int pos = holder.getAdapterPosition();
+    private void handleSelect(@NonNull VH h, int idx0) {
+        int pos = h.getAdapterPosition();
         if (pos == RecyclerView.NO_POSITION) return;
 
-        // 상태 저장(어댑터 & 모델)
-        selections.put(pos, idx0);
-        Question q = questionList.get(pos);
-        q.setSelectedOption(idx0);
+        Question q = items.get(pos);
 
-        // UI 갱신(현재 아이템만 즉시)
-        resetButtonStates(holder);
-        highlightButton(holder, idx0);
-        // notifyItemChanged(pos); // 현재 방식은 직접 갱신하므로 불필요
+        // 선택 저장 (포지션/질문ID/모델 세 군데 모두 동기화)
+        selections.put(pos, idx0);
+        q.setSelectedOption(idx0);
+        AnswerStore.get().put(q.getId(), idx0);
+
+        applySelectedState(h, idx0);
+
+        if (progressListener != null) {
+            progressListener.onChanged(getAnsweredCount(), getItemCount());
+        }
+    }
+
+    private void applySelectedState(@NonNull VH h, int sel0) {
+        // 버튼 상태 초기화
+        setBtnSelected(h.btn1, false);
+        setBtnSelected(h.btn2, false);
+        setBtnSelected(h.btn3, false);
+        // 선택 반영
+        if (sel0 == 0) setBtnSelected(h.btn1, true);
+        else if (sel0 == 1) setBtnSelected(h.btn2, true);
+        else if (sel0 == 2) setBtnSelected(h.btn3, true);
+    }
+
+    // selector가 state_selected/activated 둘 다 대응할 수 있게 둘 다 세팅
+    private void setBtnSelected(Button b, boolean selected) {
+        b.setSelected(selected);
+        b.setActivated(selected);
     }
 
     @Override
     public int getItemCount() {
-        return questionList.size();
+        return items.size();
     }
 
-    public static class QuestionViewHolder extends RecyclerView.ViewHolder {
-        final TextView tvQuestion;
-        final Button btnOption1, btnOption2, btnOption3;
+    // ------------------ 외부 접근용 유틸 ------------------
 
-        public QuestionViewHolder(@NonNull View itemView) {
-            super(itemView);
-            tvQuestion = itemView.findViewById(R.id.tvQuestion);
-            btnOption1 = itemView.findViewById(R.id.btnOption1);
-            btnOption2 = itemView.findViewById(R.id.btnOption2);
-            btnOption3 = itemView.findViewById(R.id.btnOption3);
+    /** 현재까지 선택한 문항 수 */
+    public int getAnsweredCount() {
+        int count = 0;
+        final int n = getItemCount();
+        for (int pos = 0; pos < n; pos++) {
+            int sel0 = selections.get(pos,
+                    items.get(pos).getSelectedOption() >= 0 ? items.get(pos).getSelectedOption() : -1);
+            if (sel0 >= 0) count++;
         }
+        return count;
     }
 
-    // ------ 공개 메서드: 액티비티에서 쉽게 사용 ------
-
-    /** position 0..N-1 순서대로 answerId(1..n)를 반환. 미선택은 -1 */
+    /** position 순서대로 answerId(1..3), 미선택은 -1 */
     public List<Integer> getSelections() {
         int n = getItemCount();
         List<Integer> out = new ArrayList<>(n);
         for (int pos = 0; pos < n; pos++) {
-            int sel0 = selections.get(pos, questionList.get(pos).getSelectedOption());
-            out.add(sel0 >= 0 ? (sel0 + 1) : -1); // 1-based 로 변환
+            int sel0 = selections.get(pos,
+                    items.get(pos).getSelectedOption() >= 0 ? items.get(pos).getSelectedOption() : -1);
+            out.add(sel0 >= 0 ? (sel0 + 1) : -1);
         }
         return out;
     }
 
-    /** questionId -> answerId(1..n) 매핑을 반환. 미선택은 -1 */
+    /** questionId -> answerId(1..3), 미선택은 -1 */
     public Map<Integer, Integer> getAnswerMap() {
         Map<Integer, Integer> map = new LinkedHashMap<>();
         int n = getItemCount();
         for (int pos = 0; pos < n; pos++) {
-            int qid = questionList.get(pos).getId();
-            int sel0 = selections.get(pos, questionList.get(pos).getSelectedOption());
-            map.put(qid, sel0 >= 0 ? (sel0 + 1) : -1);
+            Question q = items.get(pos);
+            int sel0 = selections.get(pos,
+                    q.getSelectedOption() >= 0 ? q.getSelectedOption() : -1);
+            map.put(q.getId(), sel0 >= 0 ? (sel0 + 1) : -1);
         }
         return map;
     }
 
-    /** 외부에서 저장해둔 (questionId -> answerId 1..n) 를 어댑터에 주입해 복원 */
+    /** (questionId -> answerId 1..3) 외부 저장값으로 전체 복원 */
     public void restoreFrom(Map<Integer, Integer> qidToAns) {
         if (qidToAns == null) return;
         selections.clear();
-        for (int pos = 0; pos < questionList.size(); pos++) {
-            Question q = questionList.get(pos);
+        for (int pos = 0; pos < items.size(); pos++) {
+            Question q = items.get(pos);
             Integer ans1 = qidToAns.get(q.getId());
             int sel0 = (ans1 != null && ans1 > 0) ? (ans1 - 1) : -1;
             q.setSelectedOption(sel0);
             if (sel0 >= 0) selections.put(pos, sel0);
         }
         notifyDataSetChanged();
+        if (progressListener != null) {
+            progressListener.onChanged(getAnsweredCount(), getItemCount());
+        }
     }
 
-    // ------ 내부 헬퍼 ------
-
-    private void resetButtonStates(QuestionViewHolder holder) {
-        holder.btnOption1.setSelected(false);
-        holder.btnOption2.setSelected(false);
-        holder.btnOption3.setSelected(false);
+    /** 리스트 교체 (예: 16문항 세팅 교체) */
+    public void setData(List<Question> newItems) {
+        items.clear();
+        if (newItems != null) items.addAll(newItems);
+        selections.clear();
+        notifyDataSetChanged();
+        if (progressListener != null) {
+            progressListener.onChanged(getAnsweredCount(), getItemCount());
+        }
     }
 
-    private void highlightButton(QuestionViewHolder holder, int selectedIndex0) {
-        if (selectedIndex0 == 0) holder.btnOption1.setSelected(true);
-        if (selectedIndex0 == 1) holder.btnOption2.setSelected(true);
-        if (selectedIndex0 == 2) holder.btnOption3.setSelected(true);
+    // ------------------ 뷰홀더 ------------------
+
+    public static class VH extends RecyclerView.ViewHolder {
+        final TextView tvQuestion;
+        final Button btn1, btn2, btn3;
+        public VH(@NonNull View v) {
+            super(v);
+            tvQuestion = v.findViewById(R.id.tvQuestion);
+            btn1 = v.findViewById(R.id.btnOption1);
+            btn2 = v.findViewById(R.id.btnOption2);
+            btn3 = v.findViewById(R.id.btnOption3);
+        }
     }
 }

@@ -190,7 +190,7 @@ public class EmailActivity extends AppCompatActivity {
         login.addProperty("username", usernameFromInfo);
         login.addProperty("password", passwordFromInfo);
 
-        ApiClient.getApiService().login(login).enqueue(new Callback<JsonObject>() {
+        ApiClient.getApiService().register(login).enqueue(new Callback<JsonObject>() {
             @Override public void onResponse(Call<JsonObject> call, Response<JsonObject> res) {
                 if (res.isSuccessful() && res.body() != null) {
                     String token = res.body().get("token").getAsString();

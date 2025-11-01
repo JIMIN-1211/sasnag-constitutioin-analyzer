@@ -53,7 +53,7 @@ public class QuestionActivity2 extends AppCompatActivity {
 
         // 문항(4~6)
         questionList = new ArrayList<>();
-        questionList.add(new Question(4, "성격이 외향적인 편인가요??", Arrays.asList("외향적이다", "보통이다", "내성적이다")));
+        questionList.add(new Question(4, "성격이 외향적인 편인가요?", Arrays.asList("외향적이다", "보통이다", "내성적이다")));
         questionList.add(new Question(5, "남성적인 성향이 강한가요, 여성적인 성향이 강한가요?", Arrays.asList("남성적이다", "보통이다", "여성적이다")));
         questionList.add(new Question(6, "가끔 쉽게 흥분하거나 감정 기복이 있는 편인가요?", Arrays.asList("자주 그렇다", "가끔 그렇다", "거의 없다")));
 

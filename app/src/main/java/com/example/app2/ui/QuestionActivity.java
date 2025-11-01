@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.app2.R;
 import com.example.app2.adapters.QuestionAdapter;
 import com.example.app2.models.Question;
+import com.example.app2.survey.AnswerStore;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,8 +35,10 @@ public class QuestionActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question);
+        AnswerStore.get().clear();
 
         recyclerView = findViewById(R.id.recyclerView);
         btnNext = findViewById(R.id.btnNext);

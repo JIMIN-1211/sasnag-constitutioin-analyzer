@@ -24,23 +24,20 @@
         </activity>
 
         <!-- 스플래시 이후 이동할 화면 -->
-        <activity android:name=".ui.LoginActivity"/>
         <activity android:name=".ui.AgreementActivity"/>
         <activity android:name=".ui.InfoActivity"/>
         <activity android:name=".ui.EmailActivity"/>
         <activity android:name=".ui.MainActivity"/>
         <activity android:name=".ui.BodyInfoActivity"/>
-        <activity android:name=".ui.QuestionActivity"/>
-        <activity android:name=".ui.QuestionActivity2"/>
-        <activity android:name=".ui.QuestionActivity3"/>
-        <activity android:name=".ui.QuestionActivity4"/>
-        <activity android:name=".ui.QuestionActivity5"/>
-        <activity android:name=".ui.QuestionActivity6"/>
         <activity android:name=".ui.ResultActivity"/>
         <activity android:name=".ui.IdLoginActivity"/>
         <activity android:name=".ui.RecordSimpleActivity"/>
-
-
+        <activity android:name=".ui.QuestionsSingleActivity"/>
+        <activity android:name=".ui.HealthRecordActivity"/>
+        <activity android:name=".ui.MealRecordActivity"/>
+        <activity android:name=".ui.MyPageActivity"/>
+        <activity android:name=".ui.WorkoutRecordActivity" />
+        <activity android:name=".ui.RecordSimpleActivity" />
     </application>
 
 </manifest>

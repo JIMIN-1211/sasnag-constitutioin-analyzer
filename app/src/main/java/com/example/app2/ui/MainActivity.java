@@ -2,7 +2,9 @@ package com.example.app2.ui;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
@@ -11,89 +13,206 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.app2.R;
+import com.example.app2.api.ApiClient;
+import com.example.app2.api.ApiService;
+import com.google.gson.JsonObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView tvToday, tvHeadline, tvSubHeadline;
-    private TextView btnPrevDay, btnNextDay, btnOpenRecordSimple;
-    private TextView tabHome, tabHealth, tabMy;
+    // [수정됨] 날짜 관련 뷰 제거
+    private TextView tvHeadline;
+    private TextView btnOpenRecord, btnOpenBodyInfo, btnOpenMyPage, btnHome;
 
-    private final Calendar cal = Calendar.getInstance();
+    private TextView tvScoreExercise;
+    private TextView tvTodayWorkoutMinutes;
+    private TextView tvTodayMealCalories;
+
+    // [수정됨] 날짜 계산용 cal 변수 제거
+    // private final Calendar cal = Calendar.getInstance();
+
+    public static final String PREFS_NAME = "AppPrefs";
+    private static final String KEY_HAS_SEEN_WELCOME = "hasSeenWelcome";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);   // (내가 만든 메인 XML 그대로 사용)
+        setContentView(R.layout.activity_main);
 
-        // ===== 기존 메인 기능들 바인딩/설정 =====
-        tvToday = findViewById(R.id.tvToday);
+        ApiClient.init(getApplicationContext());
+
+        // ===== 뷰 바인딩 =====
+        // [수정됨] 날짜 관련 뷰 바인딩 제거
         tvHeadline = findViewById(R.id.tvHeadline);
-        tvSubHeadline = findViewById(R.id.tvSubHeadline);
-        btnPrevDay = findViewById(R.id.btnPrevDay);
-        btnNextDay = findViewById(R.id.btnNextDay);
-        btnOpenRecordSimple = findViewById(R.id.btnOpenRecordSimple);
-        btnOpenRecordSimple.setOnClickListener(v -> {
-            Intent i = new Intent(this, com.example.app2.ui.RecordSimpleActivity.class);
+        btnOpenRecord = findViewById(R.id.btnOpenRecord);
+        btnOpenMyPage = findViewById(R.id.btnOpenMyPage);
+        btnOpenBodyInfo = findViewById(R.id.btnOpenBodyInfo);
+        btnHome = findViewById(R.id.btnHome);
+
+        tvScoreExercise = findViewById(R.id.tvScoreExercise);
+        tvTodayWorkoutMinutes = findViewById(R.id.tvTodayWorkoutMinutes);
+        tvTodayMealCalories = findViewById(R.id.tvTodayMealCalories);
+
+        // ===== 클릭 리스너 설정 =====
+        btnOpenRecord.setOnClickListener(v -> {
+            Intent i = new Intent(this, RecordSimpleActivity.class);
             startActivity(i);
         });
-        tabHome = findViewById(R.id.tabHome);
-        tabHealth = findViewById(R.id.tabHealth);
-        tabMy = findViewById(R.id.tabMy);
+        btnOpenBodyInfo.setOnClickListener(v -> {
+            Intent intent = new Intent(this, BodyInfoActivity.class);
+            startActivity(intent);
+        });
+        btnOpenMyPage.setOnClickListener(v->{
+            Intent intent = new Intent(this, MyPageActivity.class);
+            startActivity(intent);
+        });
 
-        // 샘플 데이터 (필요 시 Intent로 교체)
-        String name = "홍길동";
-        String constitution = "태음인";
-        if (tvHeadline != null) tvHeadline.setText(constitution + " " + name + "님,");
-        if (tvSubHeadline != null) tvSubHeadline.setText("오늘의 컨디션은 어떠신가요?");
-        renderDate();
+        // [수정됨] 날짜 관련 로직 제거
+        // renderDate();
+        // if (btnPrevDay != null) ...
+        // if (btnNextDay != null) ...
 
-        if (btnPrevDay != null) btnPrevDay.setOnClickListener(v -> { cal.add(Calendar.DATE, -1); renderDate(); });
-        if (btnNextDay != null) btnNextDay.setOnClickListener(v -> { cal.add(Calendar.DATE, 1); renderDate(); });
+        if (btnHome != null)   btnHome.setOnClickListener(v -> Toast.makeText(this, "현재 화면입니다", Toast.LENGTH_SHORT).show());
 
-        if (tabHome != null)   tabHome.setOnClickListener(v -> Toast.makeText(this, "홈", Toast.LENGTH_SHORT).show());
-        if (tabHealth != null) tabHealth.setOnClickListener(v -> Toast.makeText(this, "건강기록", Toast.LENGTH_SHORT).show());
-        if (tabMy != null)     tabMy.setOnClickListener(v -> Toast.makeText(this, "마이페이지", Toast.LENGTH_SHORT).show());
-
-        // ===== 기존에 있던 환영 팝업 유지 =====
-        showWelcomeDialog();   // 앱 진입 시 팝업 표시
+        // 웰컴 팝업 로직
+        checkWelcomePopup();
     }
 
-    private void renderDate() {
-        // 예: "오늘 (9월 5일 금요일)"
-        if (tvToday == null) return;
-        String dayName = new SimpleDateFormat("E", Locale.KOREAN).format(cal.getTime()); // 요일
-        String monthDay = new SimpleDateFormat("M월 d일", Locale.KOREAN).format(cal.getTime());
-        tvToday.setText("오늘 (" + monthDay + " " + dayName + ")");
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadHomeData(); // 홈 데이터 불러오기
     }
 
-    /** 기존 팝업 로직 그대로 유지 */
+    /** 홈 화면 데이터 API 호출 */
+    private void loadHomeData() {
+        ApiService api = ApiClient.getApiService();
+        api.getHomeData().enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    Log.d("MainActivity", "Home data loaded: " + response.body().toString());
+                    updateUI(response.body());
+                } else {
+                    Log.e("MainActivity", "Home data load failed: " + response.code());
+                    if(response.code() == 401) {
+                        Toast.makeText(MainActivity.this, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Log.e("MainActivity", "Home data network error: " + t.getMessage());
+            }
+        });
+    }
+
+    // =================================================================
+    //  ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ [수정된 부분] ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+    // =================================================================
+
+    /** API 응답으로 UI 업데이트 */
+    private void updateUI(JsonObject data) {
+        try {
+            // 1. 유저 정보 업데이트
+            if (tvHeadline != null && data.has("user_info")) {
+                JsonObject userInfo = data.getAsJsonObject("user_info");
+                String name = "사용자";
+                String constitution = "체질";
+                if (userInfo.has("name") && !userInfo.get("name").isJsonNull()) {
+                    name = userInfo.get("name").getAsString();
+                }
+                if (userInfo.has("constituion") && !userInfo.get("constituion").isJsonNull()) {
+                    constitution = userInfo.get("constituion").getAsString();
+                }
+                tvHeadline.setText(constitution + " " + name + "님,");
+            }
+
+            // 2. 오늘 리포트 업데이트
+            int calories = 0;
+            int exerciseKcal = 0; // [수정] 변수명을 duration -> exerciseKcal 로 변경
+            if (data.has("today_report") && !data.get("today_report").isJsonNull()) {
+                JsonObject report = data.getAsJsonObject("today_report");
+                if (report.has("meal_calories") && !report.get("meal_calories").isJsonNull()) {
+                    calories = report.get("meal_calories").getAsInt();
+                }
+                // [수정] 서버가 보내주는 'exercise_calories'를 읽도록 변경
+                if (report.has("exercise_calories") && !report.get("exercise_calories").isJsonNull()) {
+                    exerciseKcal = report.get("exercise_calories").getAsInt();
+                }
+            }
+
+            // 3. 운동 점수판 업데이트
+            if (tvScoreExercise != null) {
+                // [수정] "분" -> "kcal"
+                tvScoreExercise.setText(exerciseKcal + "kcal");
+            }
+
+            // 4. 오늘의 기록 섹션 업데이트
+            if (tvTodayWorkoutMinutes != null) {
+                // [수정] "운동: ... 분" -> "운동: ... kcal"
+                tvTodayWorkoutMinutes.setText("운동: " + exerciseKcal + "kcal");
+            }
+            if (tvTodayMealCalories != null) {
+                tvTodayMealCalories.setText("식사: " + calories + "kcal");
+            }
+
+        } catch (Exception e) {
+            Log.e("MainActivity_UI", "Error parsing home data JSON", e);
+            Toast.makeText(this, "데이터 표시에 실패했습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // =================================================================
+    //  ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ [수정된 부분] ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+    // =================================================================
+
+
+    // [수정됨] renderDate() 메서드 전체 삭제
+
+    private void checkWelcomePopup() {
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        boolean hasSeenWelcome = prefs.getBoolean(KEY_HAS_SEEN_WELCOME, false);
+        if (!hasSeenWelcome) {
+            showWelcomeDialog();
+        }
+    }
+
     private void showWelcomeDialog() {
         Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_welcome);
-        dialog.setCancelable(false); // 바깥 클릭으로 닫히지 않게
+        dialog.setCancelable(false);
 
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         TextView tvTitle = dialog.findViewById(R.id.tvTitle);
         if (tvTitle != null) tvTitle.setText("환영합니다!");
-
-        Button btnStart = dialog.findViewById(R.id.btnStartQuestion); // 초록 버튼
-        Button btnHome  = dialog.findViewById(R.id.btnGoHome);        // 회색 버튼
+        Button btnStart = dialog.findViewById(R.id.btnStartQuestion);
+        Button btnHome  = dialog.findViewById(R.id.btnGoHome);
 
         if (btnStart != null) {
             btnStart.setOnClickListener(v -> {
+                prefs.edit().putBoolean(KEY_HAS_SEEN_WELCOME, true).apply();
                 Intent intent = new Intent(MainActivity.this, BodyInfoActivity.class);
                 startActivity(intent);
                 dialog.dismiss();
             });
         }
         if (btnHome != null) {
-            btnHome.setOnClickListener(v -> dialog.dismiss()); // 팝업만 닫고 홈 유지
+            btnHome.setOnClickListener(v -> {
+                prefs.edit().putBoolean(KEY_HAS_SEEN_WELCOME, true).apply();
+                dialog.dismiss();
+            });
         }
-
         dialog.show();
     }
 }

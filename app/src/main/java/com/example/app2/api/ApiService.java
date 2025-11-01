@@ -5,33 +5,42 @@ import com.google.gson.JsonObject;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.POST;
-import com.example.app2.models.LoginResponse;
-import com.example.app2.models.LoginRequest;
+import retrofit2.http.Query; // [추가]
+
 public interface ApiService {
+
     @GET("healthz")
     Call<JsonObject> healthz();
 
+    // --- Auth ---
     @POST("auth/register-creds")
-    Call<JsonObject> sendRegisterCreds(@Body JsonObject body); // username, password, email
+    Call<JsonObject> sendRegisterCreds(@Body JsonObject body);
 
     @POST("auth/register")
-    Call<JsonObject> register(@Body JsonObject body); // email, auth_code, name, birth_year, gender
+    Call<JsonObject> register(@Body JsonObject body);
 
     @POST("auth/login")
-    Call<JsonObject> login(@Body JsonObject body); // username, password
+    Call<JsonObject> login(@Body JsonObject body);
 
+    // --- Me ---
     @GET("users/me")
-    Call<JsonObject> me(@Header("Authorization") String bearer);
+    Call<JsonObject> getMe();
 
+    // --- Constitution Analyze ---
     @POST("constitution/analyze")
-    Call<JsonObject> analyze(@Header("Authorization") String bearer,
-                             @Body JsonObject body); // userId, userInfo, answers
-    @POST("auth/login")
-    Call<LoginResponse> login(@Body LoginRequest body);
+    Call<JsonObject> analyze(@Body JsonObject body);
 
-    @POST("constitution/analyze")
-    retrofit2.Call<com.example.app2.models.AnalyzeResponse> analyze(@Body com.example.app2.models.AnalyzeRequest body);
+    // --- [추가] 식단 기록 API (Notion 기준) ---
+    @POST("diet")
+    Call<JsonObject> addDietLog(@Body JsonObject body);
+
+    // --- [추가] 운동 기록 API (Notion 기준) ---
+    @POST("exercise")
+    Call<JsonObject> addExerciseLog(@Body JsonObject body);
+
+    @GET("home")
+    Call<JsonObject> getHomeData();
+
 
 }
