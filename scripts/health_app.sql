@@ -12,8 +12,6 @@ CREATE TABLE IF NOT EXISTS users (
     gender VARCHAR(10) NULL,
     birth_year INT NULL,
     age INT NULL,
-    height FLOAT NULL,
-    weight FLOAT NULL,
     bmi FLOAT NULL,
     alert_enabled BOOLEAN NOT NULL DEFAULT FALSE,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -94,6 +92,8 @@ CREATE TABLE IF NOT EXISTS survey_answers (
 CREATE TABLE IF NOT EXISTS user_constitution (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_id BIGINT NOT NULL,
+    height FLOAT NULL,
+    weight FLOAT NULL,
     constitution_type VARCHAR(20) NOT NULL,
     score FLOAT NOT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
