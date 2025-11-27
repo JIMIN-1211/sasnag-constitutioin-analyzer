@@ -38,6 +38,7 @@ public class QuestionsSingleActivity extends AppCompatActivity {
     private int userId = 0;
     private Float heightCmFromBody = null;
     private Float weightKgFromBody = null;
+    private String nameFromBody = null; // 1. 이름 저장 변수 (확인)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +57,11 @@ public class QuestionsSingleActivity extends AppCompatActivity {
         }
         if (getIntent().hasExtra("weightKg")) {
             weightKgFromBody = getIntent().getFloatExtra("weightKg", 0f);
+        }
+
+        // 2. onCreate에서 이름 받아오기 (확인)
+        if (getIntent().hasExtra("name")) {
+            nameFromBody = getIntent().getStringExtra("name");
         }
 
         // userId는 로그인 후 me 결과 저장분 사용
@@ -99,7 +105,7 @@ public class QuestionsSingleActivity extends AppCompatActivity {
         JsonObject body = buildRequestJson(adapter.getAnswerMap());
         android.util.Log.d("ANALYZE_BODY", body.toString());
 
-        ApiService api = ApiClient.getApiService();
+        ApiService api = ApiClient.getApiService(this);
         Call<JsonObject> call = api.analyze(body); // Authorization은 Interceptor가 자동 첨부
 
         btnSubmit.setEnabled(false);
@@ -132,6 +138,11 @@ public class QuestionsSingleActivity extends AppCompatActivity {
                 if (weightKgFromBody != null && weightKgFromBody > 0f) {
                     i.putExtra("weightKg", weightKgFromBody);
                 }
+
+                // 3. ResultActivity로 이름 전달 (확인)
+                if (nameFromBody != null) {
+                    i.putExtra("name", nameFromBody);
+                }
                 startActivity(i);
             }
 
@@ -146,6 +157,7 @@ public class QuestionsSingleActivity extends AppCompatActivity {
     }
 
     private List<Question> buildQuestions() {
+        // ... (질문 목록은 수정 없음) ...
         List<Question> list = new ArrayList<>(16);
         list.add(new Question(1,  "성격이 대범한 편인가요?", Arrays.asList("매우 대범하다","보통이다","섬세한 편이다")));
         list.add(new Question(2,  "행동 속도는 어떤가요?", Arrays.asList("빠른 편이다","보통이다","느린 편이다")));
@@ -153,10 +165,10 @@ public class QuestionsSingleActivity extends AppCompatActivity {
         list.add(new Question(4,  "성격이 외향적인 편인가요?", Arrays.asList("외향적이다","보통이다","내성적이다")));
         list.add(new Question(5,  "남성적인 경향이 강한가요?\n여성적 성향이 강한가요?", Arrays.asList("남성적이다","보통이다","여성적이다")));
         list.add(new Question(6,  "가끔 쉽게 흥분하거나 감정 기복이 있는 편인가요?", Arrays.asList("자주 그렇다","가끔 그렇다","거의 없다")));
-        list.add(new Question(7,  "평소 소화 상태는 어떠신가요?", Arrays.asList("소화가 잘 된다","소화가\n잘 안되지만\n불편하지 않다","소화가\n잘 안되고\n불편하다")));
+        list.add(new Question(7,  "평소 소화 상태는 어떠신가요?", Arrays.asList("소화가 잘 된다","잘 안되지만\n불편하지 않다","잘 안되고\n불편하다")));
         list.add(new Question(8,  "식욕 상태는 어떤가요?", Arrays.asList("매우 좋다","보통이다","입맛이 없다")));
         list.add(new Question(9,  "야식을 자주 드시나요?", Arrays.asList("거의\n먹지 않는다","가끔 먹는다","자주 먹는다")));
-        list.add(new Question(10,"기름진 음식이나 단 음식을 선호하시나요?", Arrays.asList("좋아한다","보통이다","별로\n좋아하지 않는다")));
+        list.add(new Question(10,"기름진 음식이나 단 음식을 선호하시나요?", Arrays.asList("좋아한다","보통이다","별로 좋아하지\n않는다")));
         list.add(new Question(11,"평소 땀을 많이 흘리는 편인가요?", Arrays.asList("많이 흘린다","보통이다","거의\n흘리지 않는다")));
         list.add(new Question(12,"땀을 흘리고 난 뒤 기분이 어떤가요?", Arrays.asList("상쾌하다","피곤하다","아무런\n차이가 없다")));
         list.add(new Question(13,"대변이 마려울 때 참기 어려운가요?", Arrays.asList("자주 그렇다","가끔 그렇다","거의 없다")));
@@ -168,6 +180,7 @@ public class QuestionsSingleActivity extends AppCompatActivity {
 
     /** 서버 사양에 맞는 Gson JsonObject 생성 — BodyInfo 입력값 반영 */
     private JsonObject buildRequestJson(Map<Integer, Integer> qidToAns) {
+        // ... (이 메서드는 수정 없음) ...
         JsonObject body = new JsonObject();
         body.addProperty("userId", userId);
 

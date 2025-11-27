@@ -10,13 +10,11 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <!-- 상단 바 (뒤로가기 + 제목) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical">
-
             <TextView
                 android:id="@+id/btnBack"
                 android:layout_width="wrap_content"
@@ -35,7 +33,6 @@
                 android:textSize="18sp" />
         </LinearLayout>
 
-        <!-- 안내 문구 -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,7 +43,6 @@
             android:layout_marginBottom="16dp"/>
 
 
-        <!-- ========== 이메일 + 인증요청 ========== -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -61,25 +57,28 @@
 
             <EditText
                 android:id="@+id/etEmail"
-                android:layout_width="395dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="#F2F2F2"
                 android:hint="example@example.com"
                 android:inputType="textEmailAddress"
-                android:padding="12dp" />
+                android:padding="12dp"
+
+                android:background="@drawable/bg_edittext_rounded_gray" />
 
             <Button
                 android:id="@+id/btnRequestCode"
-                android:layout_width="112dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
-                android:backgroundTint="#2E7D32"
                 android:text="인증번호 받기"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+
+                android:background="@drawable/bg_button_rounded_green" />
         </LinearLayout>
 
-        <!-- 인증번호 입력 + 타이머 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -92,11 +91,12 @@
                 android:layout_width="0dp"
                 android:layout_height="44dp"
                 android:layout_weight="1"
-                android:background="#F2F2F2"
-                android:hint="인증번호 6자리"
+                android:hint="인증번호 4자리"
                 android:inputType="number"
-                android:maxLength="6"
-                android:padding="12dp"/>
+                android:maxLength="4"
+                android:padding="12dp"
+
+                android:background="@drawable/bg_edittext_rounded_gray" />
 
             <TextView
                 android:id="@+id/tvTimer"
@@ -106,8 +106,6 @@
                 android:textColor="#D32F2F"
                 android:textStyle="bold"
                 android:layout_marginStart="8dp"/>
-
-
         </LinearLayout>
 
         <TextView
@@ -117,15 +115,15 @@
             android:textColor="#666666"
             android:layout_marginTop="6dp"/>
 
-        <!-- 하단 다음 버튼 -->
         <Button
             android:id="@+id/btnSubmit"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:text="가입 완료하기"
             android:textColor="@android:color/white"
-            android:backgroundTint="#2E7D32"
             android:layout_marginTop="22dp"
-            android:layout_marginBottom="8dp"/>
+            android:layout_marginBottom="8dp"
+
+            android:background="@drawable/bg_button_rounded_green" />
     </LinearLayout>
 </ScrollView>

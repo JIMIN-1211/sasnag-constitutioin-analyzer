@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    tools:context=".ui.AddWorkoutActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/ic_media_previous"
+            android:padding="12dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="#000000"
+            android:contentDescription="뒤로가기" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="운동 추가"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/etSearchWorkout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@drawable/bg_search_bar_gray"
+        android:drawableStart="@android:drawable/ic_menu_search"
+        android:drawablePadding="12dp"
+        android:drawableTint="#8A8A8A"
+        android:hint="어떤 운동을 하셨나요?"
+        android:padding="14dp"
+        android:textColor="#000000"
+        android:textColorHint="#8A8A8A"
+        android:imeOptions="actionSearch"
+        android:inputType="text" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="생활체육"
+                android:textColor="#000000"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:columnCount="2"
+                android:useDefaultMargins="false"> <Button
+                android:id="@+id/btnWorkoutWalk"
+                style="@style/WorkoutButtonWithMargin"
+                android:text="걷기" />
+
+                <Button
+                    android:id="@+id/btnWorkoutRun"
+                    style="@style/WorkoutButtonWithMargin"
+                    android:text="달리기" />
+
+                <Button
+                    android:id="@+id/btnWorkoutHike"
+                    style="@style/WorkoutButtonWithMargin"
+                    android:text="등산" />
+
+                <Button
+                    android:id="@+id/btnWorkoutCycle"
+                    style="@style/WorkoutButtonWithMargin"
+                    android:text="자전거" />
+            </GridLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="헬스"
+                android:textColor="#000000"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:columnCount="2"
+                android:useDefaultMargins="false"> <Button
+                android:id="@+id/btnWorkoutChest"
+                style="@style/WorkoutButtonWithMargin"
+                android:text="가슴" />
+
+                <Button
+                    android:id="@+id/btnWorkoutBack"
+                    style="@style/WorkoutButtonWithMargin"
+                    android:text="등" />
+
+                <Button
+                    android:id="@+id/btnWorkoutLegs"
+                    style="@style/WorkoutButtonWithMargin"
+                    android:text="하체" />
+
+                <Button
+                    android:id="@+id/btnWorkoutShoulder"
+                    style="@style/WorkoutButtonWithMargin"
+                    android:text="어깨" />
+            </GridLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

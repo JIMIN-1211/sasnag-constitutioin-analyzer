@@ -15,13 +15,6 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp">
 
-        <ImageView
-            android:id="@+id/btnBack"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@android:drawable/ic_menu_revert"
-            app:tint="#000000" />
-
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"

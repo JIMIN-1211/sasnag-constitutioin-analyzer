@@ -2,17 +2,57 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="#F5F5F5"
+    tools:context=".ui.ResultActivity">
 
-    <!-- 스크롤 영역: 바텀바 위까지 -->
+    <LinearLayout
+        android:id="@+id/appBar"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:background="#FFFFFF"
+        android:elevation="4dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@android:drawable/ic_media_previous"
+            app:tint="#000000"
+            android:padding="12dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="뒤로가기" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="분석 결과"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+    </LinearLayout>
+
     <ScrollView
         android:id="@+id/contentScroll"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintTop_toTopOf="parent"
+        android:scrollbars="none"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/appBar"
         app:layout_constraintBottom_toTopOf="@id/bottomBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
@@ -20,213 +60,442 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="24dp">
 
-            <!-- 상단 앱바 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:gravity="center_vertical"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp">
-
-                <TextView
-                    android:id="@+id/btnBack"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:gravity="center"
-                    android:text="←"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="분석 결과"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
-                    android:gravity="center" />
-
-                <View
-                    android:layout_width="40dp"
-                    android:layout_height="1dp"/>
-            </LinearLayout>
-
-            <!-- 본문 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:background="@drawable/bg_header_green_rounded_bottom"
+                android:elevation="4dp">
 
-                <!-- 1. 사용자 이름 배너 -->
                 <TextView
                     android:id="@+id/tvUserTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="44dp"
-                    android:layout_marginBottom="12dp"
-                    android:background="@drawable/bg_header_green"
-                    android:gravity="center_vertical"
-                    android:paddingStart="14dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:text="홍길동 님의 분석 결과"
                     android:textColor="#FFFFFF"
+                    android:textSize="22sp"
                     android:textStyle="bold" />
+            </LinearLayout>
 
-                <!-- 카드: 체질 + BMI -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_bottom_sheet_rounded"
+                android:elevation="2dp"
+                android:orientation="vertical"
+                android:padding="24dp">
+                <TextView
+                    android:id="@+id/tvConstitution"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="태음인 (太陰人)"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="체질량지수(BMI)"
+                    android:textColor="#8A8A8A"
+                    android:textSize="12sp" />
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:background="@drawable/bg_card"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <!-- 2. 체질 -->
+                    android:layout_marginTop="4dp"
+                    android:gravity="center_vertical">
                     <TextView
-                        android:id="@+id/tvConstitution"
+                        android:id="@+id/tvBmiValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="태음인 (太陰人)"
-                        android:textSize="18sp"
+                        android:text="26.5"
+                        android:textColor="#000000"
+                        android:textSize="28sp"
                         android:textStyle="bold" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginBottom="8dp"
-                        android:background="#E9ECEF" />
-
-                    <!-- 3. BMI 수치 + 뱃지 -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/tvBmiBadge"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical">
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_badge_orange"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="4dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="4dp"
+                        android:text="과체중"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp" />
+                </LinearLayout>
+                <ProgressBar
+                    android:id="@+id/progressBmi"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="12dp"
+                    android:max="400"
+                    android:progress="265"
+                    android:progressTint="#FFB74D" />
+                <TextView
+                    android:id="@+id/tvDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:lineSpacingExtra="4dp"
+                    android:text="홍길동 님의 답변을 분석한 결과..."
+                    android:textColor="#444444"
+                    android:textSize="14sp" />
+            </LinearLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="맞춤 솔루션"
+                android:textColor="#000000"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="32dp"
+                android:layout_marginStart="20dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_bottom_sheet_rounded"
+                android:elevation="2dp"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="4dp"
+                    android:background="@drawable/bg_solution_tab_bar_gray"> <TextView
+                    android:id="@+id/tabDiet"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:text="식단"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:background="@drawable/bg_solution_tab_selected_white"/> <TextView
+                    android:id="@+id/tabExercise"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:text="운동"
+                    android:textSize="16sp"
+                    android:textColor="#8A8A8A"/>
+
+                    <TextView
+                        android:id="@+id/tabLife"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:text="생활"
+                        android:textSize="16sp"
+                        android:textColor="#8A8A8A"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutDietContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="16dp">
                         <TextView
-                            android:id="@+id/tvBmiValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="26.5"
-                            android:textColor="#F46F3E"
-                            android:textSize="28sp"
-                            android:textStyle="bold" />
-
+                            android:text="부족 영양소:"
+                            android:textColor="#8A8A8A"
+                            android:textSize="14sp"/>
                         <TextView
-                            android:id="@+id/tvBmiBadge"
+                            android:id="@+id/tvNutrientDesc"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
-                            android:background="@drawable/bg_badge_orange"
-                            android:paddingLeft="10dp"
-                            android:paddingTop="4dp"
-                            android:paddingRight="10dp"
-                            android:paddingBottom="4dp"
-                            android:text="과체중"
-                            android:textColor="#FFFFFF"
-                            android:textSize="12sp" />
+                            android:text="식이섬유, 비타민 D"
+                            android:textColor="#000000"
+                            android:textSize="14sp"
+                            android:textStyle="bold"/>
                     </LinearLayout>
-
-                    <!-- 주황 Progress -->
-                    <ProgressBar
-                        android:id="@+id/progressBmi"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="12dp"
-                        android:backgroundTint="#EFEFEF"
-                        android:max="400"
-                        android:progress="265"
-                        android:progressTint="#FFB74D" />
-
-                    <!-- 4. 설명 문구 -->
-                    <TextView
-                        android:id="@+id/tvDescription"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="홍길동 님의 답변을 분석한 결과…"
-                        android:textColor="#444444"
-                        android:textSize="13sp" />
-                </LinearLayout>
-
-                <!-- 5. 핵심 건강 키워드 -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="핵심 건강 키워드"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:id="@+id/layoutKeywords"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:orientation="horizontal"/>
-
-                <!-- 6. 맞춤 솔루션 -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:text="맞춤 솔루션"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:background="@drawable/bg_panel"
-                    android:orientation="vertical"
-                    android:padding="16dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_marginTop="16dp"
+                        android:baselineAligned="false">
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="식단"
-                            android:textStyle="bold" />
+                            android:layout_height="wrap_content" android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:layout_marginEnd="8dp">
 
-                        <TextView
+                            <androidx.cardview.widget.CardView
+                                app:cardCornerRadius="12dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="80dp">
+                                <ImageView
+                                    android:id="@+id/ivFood1"
+                                    android:src="@drawable/sweet_potato"
+                                    android:scaleType="centerCrop"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"/>
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:id="@+id/tvFood1"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="고구마"
+                                android:layout_marginTop="8dp"
+                                android:textSize="14sp"
+                                android:textColor="#000"/>
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="운동" />
+                            android:layout_height="wrap_content" android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="4dp">
 
-                        <TextView
+                            <androidx.cardview.widget.CardView
+                                app:cardCornerRadius="12dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="80dp">
+                                <ImageView
+                                    android:id="@+id/ivFood2"
+                                    android:src="@drawable/broccoli"
+                                    android:scaleType="centerCrop"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"/>
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:id="@+id/tvFood2"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="브로콜리"
+                                android:layout_marginTop="8dp"
+                                android:textSize="14sp"
+                                android:textColor="#000"/>
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="생활" />
-                    </LinearLayout>
+                            android:layout_height="wrap_content" android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:layout_marginStart="8dp">
 
+                            <androidx.cardview.widget.CardView
+                                app:cardCornerRadius="12dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="80dp">
+                                <ImageView
+                                    android:id="@+id/ivFood3"
+                                    android:src="@drawable/salmon"
+                                    android:scaleType="centerCrop"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"/>
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:id="@+id/tvFood3"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="연어"
+                                android:layout_marginTop="8dp"
+                                android:textSize="14sp"
+                                android:textColor="#000"/>
+                        </LinearLayout>
+                    </LinearLayout>                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutExerciseContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:padding="32dp"
+                    android:gravity="center">
                     <TextView
-                        android:id="@+id/tvNutrients"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="운동 솔루션은 준비 중입니다."
+                        android:textColor="#8A8A8A"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/layoutLifeContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:padding="32dp"
+                    android:gravity="center">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="생활 솔루션은 준비 중입니다."
+                        android:textColor="#8A8A8A"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="추천 식품"
+                android:textColor="#000000"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="32dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="식이섬유 보충과 활력 증진에 도움될 수 있어요"
+                android:textColor="#424242"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:baselineAligned="false">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/recommendCard1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:textColor="#6A6A6A"
-                        android:textSize="13sp"
-                        android:visibility="gone"/>
-                </LinearLayout>
+                        android:orientation="vertical">
 
+                        <ImageView
+                            android:id="@+id/ivRecommend1"
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/img_food_apple_cider" /> <TextView
+                        android:id="@+id/tvRecommendName1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="유기농 애플사이다비니거 애사비 스틱 1박스"
+                        android:textColor="#000000"
+                        android:textSize="14sp"
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:padding="12dp"
+                        android:minHeight="64dp"/>
+
+                        <TextView
+                            android:id="@+id/btnRecommendLink1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="쇼핑몰에서 보기 ↗"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp"
+                            android:paddingBottom="12dp"
+                            android:paddingTop="8dp"
+                            android:background="@drawable/bg_btn_green_round" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/recommendCard2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/ivRecommend2"
+                            android:layout_width="match_parent"
+                            android:layout_height="120dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/img_food_fermented_oats" /> <TextView
+                        android:id="@+id/tvRecommendName2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="발효잡곡 400g 3종 세트 1호 (귀리/병아리콩/렌틸콩)"
+                        android:textColor="#000000"
+                        android:textSize="14sp"
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:padding="12dp"
+                        android:minHeight="64dp"/>
+
+                        <TextView
+                            android:id="@+id/btnRecommendLink2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="쇼핑몰에서 보기 ↗"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold"
+                            android:textSize="14sp"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp"
+                            android:paddingBottom="12dp"
+                            android:paddingTop="8dp"
+                            android:background="@drawable/bg_btn_green_round" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
-    <!-- 고정 바텀바 -->
     <LinearLayout
         android:id="@+id/bottomBar"
         android:layout_width="0dp"
@@ -234,37 +503,28 @@
         android:orientation="horizontal"
         android:gravity="center"
         android:background="#FFFFFF"
+        android:elevation="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
-
         <TextView
             android:id="@+id/btnHome"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
+            style="@style/BottomTab"
             android:drawableTop="@drawable/home"
             android:text="홈"
-            android:textColor="#2E7D32"/>
-
+            android:textColor="#8A8A8A"/>
         <TextView
             android:id="@+id/btnOpenRecord"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
+            style="@style/BottomTab"
             android:drawableTop="@drawable/health"
-            android:text="건강기록"/>
-
+            android:text="건강기록"
+            android:textColor="#8A8A8A"/>
         <TextView
             android:id="@+id/btnOpenMyPage"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
+            style="@style/BottomTab"
             android:drawableTop="@drawable/person"
-            android:text="마이페이지"/>
+            android:text="마이페이지"
+            android:textColor="#8A8A8A"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

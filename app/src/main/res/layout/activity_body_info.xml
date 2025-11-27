@@ -1,10 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#FFFFFF">
 
-    <!-- 상단 툴바 -->
     <LinearLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -12,8 +12,6 @@
         android:orientation="horizontal"
         android:padding="12dp"
         android:gravity="center_vertical">
-
-        <!-- 뒤로가기 버튼 -->
         <TextView
             android:id="@+id/btnBack"
             android:layout_width="wrap_content"
@@ -21,7 +19,6 @@
             android:text="←"
             android:textSize="22sp"
             android:padding="8dp" />
-
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -30,8 +27,6 @@
             android:textSize="18sp"
             android:textStyle="bold"
             android:gravity="center" />
-
-        <!-- X 닫기 버튼 -->
         <TextView
             android:id="@+id/btnClose"
             android:layout_width="wrap_content"
@@ -40,7 +35,7 @@
             android:textSize="22sp"
             android:padding="8dp" />
     </LinearLayout>
-    <!-- 상단 진행바 -->
+
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
@@ -49,7 +44,6 @@
         android:max="6"
         android:progressTint="#2E7D32"
         android:layout_marginBottom="8dp"/>
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -59,7 +53,6 @@
         android:textColor="#666666"
         android:textSize="14sp"
         android:layout_marginEnd="16dp"/>
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -70,7 +63,6 @@
         android:layout_marginBottom="6dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"/>
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -81,7 +73,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"/>
 
-    <!-- 신장 -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -102,14 +93,13 @@
             android:layout_weight="1"
             android:hint="예) 175"
             android:inputType="number"
-            android:background="@android:drawable/edit_text"
             android:padding="12dp"
-            android:layout_marginRight="8dp"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"/>
+            android:layout_marginEnd="16dp"
+
+            android:background="@drawable/bg_edittext_rounded_gray" />
     </LinearLayout>
 
-    <!-- 체중 -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -131,24 +121,24 @@
             android:layout_weight="1"
             android:hint="예) 68"
             android:inputType="number"
-            android:background="@android:drawable/edit_text"
             android:padding="12dp"
-            android:layout_marginRight="8dp"
             android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"/>
+            android:layout_marginEnd="16dp"
+
+            android:background="@drawable/bg_edittext_rounded_gray" />
 
     </LinearLayout>
 
-    <!-- 다음 버튼 -->
     <Button
         android:id="@+id/btnNext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="다음"
         android:textColor="@android:color/white"
-        android:background="#2E7D32"
         android:enabled="false"
         android:layout_marginTop="24dp"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
+        android:layout_marginEnd="16dp"
+
+        android:background="@drawable/bg_button_rounded_green" />
 </LinearLayout>

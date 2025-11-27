@@ -37,7 +37,7 @@
         <activity android:name=".ui.MealRecordActivity"/>
         <activity android:name=".ui.MyPageActivity"/>
         <activity android:name=".ui.WorkoutRecordActivity" />
-        <activity android:name=".ui.RecordSimpleActivity" />
+        <activity android:name=".ui.AddWorkoutActivity" />
     </application>
 
 </manifest>

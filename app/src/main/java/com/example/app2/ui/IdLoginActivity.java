@@ -98,7 +98,7 @@ public class IdLoginActivity extends AppCompatActivity {
         if (tvSignUp != null) {
             tvSignUp.setOnClickListener(v -> {
                 showMessage("");
-                Intent intent = new Intent(IdLoginActivity.this, EmailActivity.class);
+                Intent intent = new Intent(IdLoginActivity.this, AgreementActivity.class);
                 startActivity(intent);
             });
         }
@@ -121,7 +121,7 @@ public class IdLoginActivity extends AppCompatActivity {
         body.addProperty("username", u);
         body.addProperty("password", p);
 
-        ApiService api = ApiClient.getApiService();
+        ApiService api = ApiClient.getApiService(this);
 
         // --- 1단계: 로그인 API 호출 ---
         api.login(body).enqueue(new Callback<JsonObject>() {
@@ -168,7 +168,7 @@ public class IdLoginActivity extends AppCompatActivity {
 
     /** 2단계: '내 정보' API 호출하여 user_id 가져오기 */
     private void fetchUserIdAndProceed(ApiService api) {
-        api.getMe().enqueue(new Callback<JsonObject>() {
+        api.getMyInfo().enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> res) {
                 setLoading(false); // 모든 로딩 종료

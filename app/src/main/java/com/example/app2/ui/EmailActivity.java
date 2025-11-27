@@ -110,7 +110,7 @@ public class EmailActivity extends AppCompatActivity {
         body.addProperty("password", passwordFromInfo);
         body.addProperty("email", email);
 
-        ApiService api = ApiClient.getApiService();
+        ApiService api = ApiClient.getApiService(this);
         btnRequestCode.setEnabled(false);
         api.sendRegisterCreds(body).enqueue(new Callback<JsonObject>() {
             @Override public void onResponse(Call<JsonObject> call, Response<JsonObject> res) {
@@ -159,7 +159,7 @@ public class EmailActivity extends AppCompatActivity {
         body.addProperty("birth_year", birthYearFromInfo);
         body.addProperty("gender", genderFromInfo);
 
-        ApiService api = ApiClient.getApiService();
+        ApiService api = ApiClient.getApiService(this);
         btnSubmit.setEnabled(false);
         api.register(body).enqueue(new Callback<JsonObject>() {
             @Override public void onResponse(Call<JsonObject> call, Response<JsonObject> res) {
@@ -190,12 +190,10 @@ public class EmailActivity extends AppCompatActivity {
         login.addProperty("username", usernameFromInfo);
         login.addProperty("password", passwordFromInfo);
 
-        ApiClient.getApiService().register(login).enqueue(new Callback<JsonObject>() {
+        ApiClient.getApiService(this).login(login).enqueue(new Callback<JsonObject>() {
             @Override public void onResponse(Call<JsonObject> call, Response<JsonObject> res) {
                 if (res.isSuccessful() && res.body() != null) {
-                    String token = res.body().get("token").getAsString();
-                    try { TokenManager.saveToken(EmailActivity.this, token); } catch (Exception ignored) {}
-                    // (선택) /users/me 호출해 userId 확보 필요하면 여기서 추가
+                    String token = res.body().get("token").getAsString();                    try { TokenManager.saveToken(EmailActivity.this, token); } catch (Exception ignored) {}
                     startActivity(new Intent(EmailActivity.this, MainActivity.class));
                     finishAffinity();
                 } else {

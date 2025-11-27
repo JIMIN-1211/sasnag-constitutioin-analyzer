@@ -71,4 +71,28 @@ public final class SurveyUtils {
         }
         return null;
     }
+    private String mapToServerType(String appType) {
+        if (appType == null) return null;
+        switch (appType) {
+            case "태양인":
+            case "taeyangin":
+            case "tae-yangin":
+                return "태양인";
+            case "태음인":
+            case "taeeumin":
+            case "tae-eumin":
+                return "태음인";
+            case "소양인":
+            case "soyangin":
+            case "so-yangin":
+                return "소양인";
+            case "소음인":
+            case "soeumin":
+            case "so-eumin":
+                return "소음인";
+            default:
+                return appType; // 혹시 이미 한글이면 그대로
+        }
+    }
+
 }

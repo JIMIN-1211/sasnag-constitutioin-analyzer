@@ -73,126 +73,29 @@
         android:text="운동 이름으로 검색하세요"
         android:textColor="#8A8A8A" />
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:tabIndicatorColor="#2E7D32"
-        app:tabSelectedTextColor="#2E7D32"
-        app:tabTextColor="#8A8A8A">
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="최근" />
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="자주" />
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="내 맞춤 추천" />
-    </com.google.android.material.tabs.TabLayout>
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <ScrollView
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/workoutRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:clipToPadding="false"
+            android:visibility="gone"
+            tools:listitem="@layout/list_item_workout" />
 
-            <LinearLayout
-                android:id="@+id/workoutListContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_search_bar_gray"
-                    android:padding="16dp">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:orientation="vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="빠르게 걷기"
-                            android:textColor="#000000"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="30분"
-                            android:textColor="#8A8A8A"
-                            android:textSize="14sp"
-                            android:layout_marginTop="4dp"/>
-                    </LinearLayout>
-
-                    <ImageButton
-                        android:id="@+id/btnDeleteWorkout1"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@android:drawable/ic_menu_close_clear_cancel"
-                        app:tint="#8A8A8A"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="삭제" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_search_bar_gray"
-                    android:padding="16dp"
-                    android:layout_marginTop="12dp">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:orientation="vertical">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="스쿼트"
-                            android:textColor="#000000"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="3세트"
-                            android:textColor="#8A8A8A"
-                            android:textSize="14sp"
-                            android:layout_marginTop="4dp"/>
-                    </LinearLayout>
-
-                    <ImageButton
-                        android:id="@+id/btnDeleteWorkout2"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@android:drawable/ic_menu_close_clear_cancel"
-                        app:tint="#8A8A8A"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="삭제" />
-                </RelativeLayout>
-
-            </LinearLayout>
-        </ScrollView>
+        <TextView
+            android:id="@+id/tvEmptyWorkout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="아직 기록된 활동이 없습니다."
+            android:textColor="#8A8A8A"
+            android:textSize="16sp"
+            android:visibility="visible" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabAddWorkout"
